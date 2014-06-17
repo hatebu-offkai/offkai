@@ -21,14 +21,14 @@ npm install
 1. http://developer.hatena.ne.jp/ja/documents/auth/apis/oauth/consumer へアクセスして、説明文を読む。
 2. http://www.hatena.ne.jp/oauth/develop へアクセスして、適当な名前でアプリを追加して、ConsumerKeyを得る。
 
-```
+```sh
 cp config/sample.yaml config/default.yaml
 ```
-
+して、編集する。
 
 # Startup
 
-```
+```sh
 npm start
 ```
 
