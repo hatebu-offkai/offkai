@@ -1,18 +1,15 @@
-###
 config = require "config"
-mongoose = requrie "mongoose"
+mongoose = require "mongoose"
 mongoose.connect "mongodb://#{config.mongodb.host}/#{config.mongodb.db}"
 {User} = require "../models/user"
-###
 
 request = require "request"
 cheerio = require "cheerio"
+async = require "async"
 
 class HatenaClient
   constructor: (@user)->
-    # ブックマークページ
     @bookmarkURL = "http://b.hatena.ne.jp/#{@user.id}/"
-    # 最近のブックマークは、新旧で取れる情報とHTML構造がぜんぜん違うのでFeed使ったほうがよい
     @feedURL = "http://b.hatena.ne.jp/#{@user.id}/atomfeed"
   parseBookmarkInfo: ($) ->
     user = @user
@@ -74,9 +71,10 @@ class HatenaClient
       return
     user.profile.first_bookmark.entry_title = entry_link.children[0].data
     user.profile.first_bookmark.entry_link = entry_link.attribs.href
-    user.profile.first_bookmark.timestamp = $("li[data-eid]:last-child li[data-user=\"#{user.id}\"] .timestamp")[0].children[0].data
     user.profile.first_bookmark.comment = $("li[data-eid]:last-child li[data-user=\"#{user.id}\"] .comment").text()
-    console.log user
+    user.profile.first_bookmark.timestamp = Date.parse $("li[data-eid]:last-child li[data-user=\"#{user.id}\"] .timestamp")[0].children[0].data
+    console.log user.profile
+    user.save(@finishCallback)
   getFirstBookmark: ()->
     request @bookmarkURL + "?of=#{@user.profile.misc.first_bookmark_offset}"
       , (err, resp, body)=>
@@ -85,23 +83,18 @@ class HatenaClient
           @parseFirstBookmark $
         else
           console.log "first bookmark failed", err
-  updateUserData: ->
+  updateUserData: (done) ->
+    @finishCallback = done
     @getBookmarkInfo()
 
-# for id in ["yuiseki"]
-for id in ["netcraft", "Lhankor_Mhy", "kamayan1980", "nisemono_san", "TERRAZI", "atq", "sabacurry", "nkoz", "hnnhn2", "kiku-chan", "Rlee1984", "yuiseki", "AnonymousLifeforms", "hyaknihyak", "dora-kou", "whkr", "kybernetes", "hinaho", "shields-pikes",  "pero_pero", "K_SHIKI", "yo-mei777", "rgfx", "new3", "kazoo_oo", "seagullwhite", "bulldra", "tomad"]
-# for id in ["yuiseki", "tomad"]
-  user =
-    id: id
-    profile: {}
-  client = new HatenaClient user
-  client.updateUserData()
-###
-User.find {}, (err, results) ->
-  for user, idx, in results
-    client = new HatenaClient user
-    client.updateUserData()
-    if idx == results.length
-      mongoose.connection.close()
-      process.exit()
-###
+user_ids = ["netcraft", "Lhankor_Mhy", "kamayan1980", "nisemono_san", "TERRAZI", "atq", "sabacurry", "nkoz", "hnnhn2", "kiku-chan", "Rlee1984", "yuiseki", "AnonymousLifeforms", "hyaknihyak", "dora-kou", "whkr", "kybernetes", "hinaho", "shields-pikes",  "pero_pero", "K_SHIKI", "yo-mei777", "rgfx", "new3", "kazoo_oo", "seagullwhite", "bulldra", "tomad"]
+fetch = (id, done) ->
+  console.log id
+  user = User.findOrCreate {id:id}, (err, user) ->
+    if !err
+      client = new HatenaClient user
+      client.updateUserData(done)
+finishCallback = (err) ->
+  mongoose.connection.close()
+  process.exit()
+async.eachSeries(user_ids, fetch, finishCallback)
