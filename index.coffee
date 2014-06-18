@@ -45,18 +45,21 @@ app.use passport.initialize()
 app.use passport.session()
 
 app.get "/auth/hatena",
-    passport.authenticate "hatena", { scope: ['read_public'] }
+  passport.authenticate "hatena", { scope: ['read_public'] }
 app.get "/auth/hatena/callback",
-    passport.authenticate "hatena",
-        failureRedirect: "/"
-        successRedirect: "/home"
+  passport.authenticate "hatena",
+    failureRedirect: "/"
+    successRedirect: "/home"
 
-app.get "/home", ->
+app.get "/", (req, res) ->
+  res.render "index", {pretty:true}
+
+app.get "/home", (req, res) ->
   console.log req.user.id
   res.send "hello, #{req.user.id}"
 
 if not module.parent
-    server = http.createServer(app).listen(config.port)
-    console.log "#{new Date()}, app start #{config.port}"
+  server = http.createServer(app).listen(config.port)
+  console.log "#{new Date()}, app start #{config.port}"
 
 

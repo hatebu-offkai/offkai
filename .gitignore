@@ -2,3 +2,4 @@ config/default.yaml
 config/runtime.json
 node_modules/*
 *.swp
+npm-debug.log
