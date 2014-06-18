@@ -2,14 +2,17 @@ mongoose = require "mongoose"
 Schema = mongoose.Schema
 userSchema = new Schema
     id: String
-    comment: String
+    attend_comment: String
     attend_status: Bool
-    prifile:
-        hatena_start_date: Date
-        hatebu_start_date: Date
+    profile:
         bookmark_count: Number
         favorites_count: Number
         favorited_count: Number
+        first_bookmark:
+            entry_title: String
+            entry_link: String
+            comment: String
+            timestamp: Date
         titles: [String]
         keywords: [String]
         tags: [String]
