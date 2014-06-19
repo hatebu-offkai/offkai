@@ -1,0 +1,8 @@
+- icon = "http://cdn1.www.st-hatena.com/users/"+user.id.slice(0,2)+"/"+user.id+"/profile_s.gif"
+- first_bookmark = user.profile.first_bookmark
+- time = first_bookmark.timestamp
+- if(time != undefined){
+-   timeStr = time.getFullYear()+"/"+(time.getMonth()+1)+"/"+time.getDay()
+- } else {
+-   timeStr = null
+- }
