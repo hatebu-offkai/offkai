@@ -1,7 +1,8 @@
 config = require "config"
 mongoose = require "mongoose"
-mongoose.connect "mongodb://#{config.mongodb.host}/#{config.mongodb.db}"
-{User} = require "../models/user"
+connection = mongoose.connect "mongodb://#{config.mongodb.host}/#{config.mongodb.db}"
+userModel = require "../models/user"
+User = connection.model("User", userModel.userSchema)
 
 request = require "request"
 cheerio = require "cheerio"
@@ -12,6 +13,7 @@ class HatenaClient
     @bookmarkURL = "http://b.hatena.ne.jp/#{@user.id}/"
     @feedURL = "http://b.hatena.ne.jp/#{@user.id}/atomfeed"
   parseBookmarkInfo: ($) ->
+    console.log "parseBookmarkInfo"
     user = @user
     user.profile.misc = {}
     user.profile.misc.new_page = $("#hatena-bookmark-user-page").length
@@ -52,6 +54,7 @@ class HatenaClient
     user.profile.misc.first_bookmark_offset = first_bookmark_offset
     user.profile.misc.bookmarks_per_page = bookmarks_per_page
   getBookmarkInfo: ->
+    console.log "request", @bookmarkURL
     request @bookmarkURL
       , (err, resp, body)=>
         if !err && resp.statusCode == 200
@@ -60,14 +63,16 @@ class HatenaClient
           @getFirstBookmark()
         else
           console.log "bookmark failed", err
+          console.log resp.statusCode
   parseFirstBookmark: ($) ->
+    console.log "parseFirstBookmark"
     user = @user
     user.profile.first_bookmark = {}
     entry_link = $('li[data-eid]:last-child h3 .entry-link')[0]
     if !entry_link
       if (user.profile.misc.first_bookmark_offset)
         user.profile.misc.first_bookmark_offset -= user.profile.misc.bookmarks_per_page
-        @getFirstBookmark
+        @getFirstBookmark()
       return
     user.profile.first_bookmark.entry_title = entry_link.children[0].data
     user.profile.first_bookmark.entry_link = entry_link.attribs.href
@@ -76,18 +81,22 @@ class HatenaClient
     console.log user.profile
     user.save(@finishCallback)
   getFirstBookmark: ()->
-    request @bookmarkURL + "?of=#{@user.profile.misc.first_bookmark_offset}"
+    firstBookmarkUrl = @bookmarkURL + "?of=#{@user.profile.misc.first_bookmark_offset}"
+    console.log "request", firstBookmarkUrl
+    request firstBookmarkUrl
       , (err, resp, body)=>
         if !err && resp.statusCode == 200
           $ = cheerio.load body
           @parseFirstBookmark $
         else
           console.log "first bookmark failed", err
+          console.log resp.statusCode
   updateUserData: (done) ->
     @finishCallback = done
     @getBookmarkInfo()
 
-user_ids = ["netcraft", "Lhankor_Mhy", "kamayan1980", "nisemono_san", "TERRAZI", "atq", "sabacurry", "nkoz", "hnnhn2", "kiku-chan", "Rlee1984", "yuiseki", "AnonymousLifeforms", "hyaknihyak", "dora-kou", "whkr", "kybernetes", "hinaho", "shields-pikes",  "pero_pero", "K_SHIKI", "yo-mei777", "rgfx", "new3", "kazoo_oo", "seagullwhite", "bulldra", "tomad"]
+user_ids = ["TERRAZI", "bulldra", "hyaknihyak", "kiku-chan"]
+#user_ids = ["netcraft", "Lhankor_Mhy", "kamayan1980", "nisemono_san", "TERRAZI", "atq", "sabacurry", "nkoz", "hnnhn2", "kiku-chan", "Rlee1984", "yuiseki", "AnonymousLifeforms", "hyaknihyak", "dora-kou", "whkr", "kybernetes", "hinaho", "shields-pikes",  "pero_pero", "K_SHIKI", "yo-mei777", "rgfx", "new3", "kazoo_oo", "seagullwhite", "bulldra", "tomad"]
 fetch = (id, done) ->
   console.log id
   user = User.findOrCreate {id:id}, (err, user) ->
