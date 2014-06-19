@@ -1,0 +1,21 @@
+extends layout/base.jade
+
+block body
+  h1= user.id
+
+  div.profile
+    - attrs = ["bookmark_count", "favorites_count", "favorited_count", "stared_count"]
+    each attr in attrs
+      div.counts(id="#{user.id}-#{attr}")
+        span.attr-name= attr
+        span :&nbsp;
+        span.attr-value= user.profile[attr]
+  div.first-bookmark
+    h2 最初のブックマーク
+    - first_bookmark = user.profile.first_bookmark
+    - time = first_bookmark.timestamp
+    - timeStr = time.getFullYear()+"/"+(time.getMonth()+1)+"/"+time.getDay()
+    div.first-time= timeStr
+    a(href=first_bookmark.entry_link)
+      span.title= first_bookmark.entry_title
+      span.comment= first_bookmark.comment

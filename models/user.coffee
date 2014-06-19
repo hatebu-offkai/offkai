@@ -5,10 +5,12 @@ userSchema = new Schema
     id: String
     attend_comment: String
     attend_status: Boolean
+    bookmarks: [{type:Schema.Types.ObjectId, ref: 'Bookmark'}]
     profile:
         bookmark_count: Number
         favorites_count: Number
         favorited_count: Number
+        stared_count: Number
         first_bookmark:
             entry_title: String
             entry_link: String
@@ -17,6 +19,7 @@ userSchema = new Schema
         titles: [String]
         keywords: [String]
         tags: [String]
+        good_users: [String]
     created: Date
     updated: Date
 userSchema.plugin findOrCreate

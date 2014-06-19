@@ -12,6 +12,10 @@ logger = require "morgan"
 passport = require "passport"
 HatenaStrategy = require("passport-hatena").Strategy
 
+mongoose = require "mongoose"
+mongoose.connect "mongodb://#{config.mongodb.host}/#{config.mongodb.db}"
+{User} = require "./models/user"
+
 
 passport.serializeUser (user, done) ->
   done null, user.id
@@ -54,9 +58,15 @@ app.get "/auth/hatena/callback",
 app.get "/", (req, res) ->
   res.render "index", {pretty:true}
 
-app.get "/home", (req, res) ->
-  console.log req.user.id
-  res.send "hello, #{req.user.id}"
+app.get "/user/:id", (req, res) ->
+  User.findOne {id:req.params.id}, (err, user) ->
+    if err?
+      console.log err
+      res.send 500, "Error"
+    if user?
+      res.render "user", {pretty:true, user:user}
+    else
+      res.send 404, "NotFound"
 
 if not module.parent
   server = http.createServer(app).listen(config.port)
