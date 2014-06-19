@@ -1,0 +1,8 @@
+extends layout/bootstrap.jade
+mixin list-user(user)
+  user.
+block body
+  include navbar
+  div.container
+    each user in users
+      div.user-id= user.id

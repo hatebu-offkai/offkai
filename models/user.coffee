@@ -33,10 +33,8 @@ userSchema.set "toJSON",
     transform: (doc, ret, options)->
         return {
             id: ret.id
-            icon: "http://cdn1.www.st-hatena.com/users/#{ret.id.slice(0,2)}/#{ret.id}/profile.gif"
             prifile: ret.profile
         }
-
 
 exports.userSchema = userSchema
 User = mongoose.model "User", userSchema

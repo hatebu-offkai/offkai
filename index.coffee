@@ -58,6 +58,14 @@ app.get "/auth/hatena/callback",
 app.get "/", (req, res) ->
   res.render "index", {pretty:true}
 
+app.get "/users", (req, res) ->
+  User.find {}, {}, {sort:{id:1}}, (err, users) ->
+    if err?
+      console.log err
+      res.send 500, "Error"
+    if users?
+      res.render "users", {pretty:true, users:users}
+
 app.get "/user/:id", (req, res) ->
   User.findOne {id:req.params.id}, (err, user) ->
     if err?

@@ -1,21 +1,57 @@
-extends layout/base.jade
-
+extends layout/bootstrap.jade
 block body
-  h1= user.id
-
-  div.profile
-    - attrs = ["bookmark_count", "favorites_count", "favorited_count", "stared_count"]
-    each attr in attrs
-      div.counts(id="#{user.id}-#{attr}")
-        span.attr-name= attr
-        span :&nbsp;
-        span.attr-value= user.profile[attr]
-  div.first-bookmark
-    h2 最初のブックマーク
-    - first_bookmark = user.profile.first_bookmark
-    - time = first_bookmark.timestamp
-    - timeStr = time.getFullYear()+"/"+(time.getMonth()+1)+"/"+time.getDay()
-    div.first-time= timeStr
-    a(href=first_bookmark.entry_link)
-      span.title= first_bookmark.entry_title
-      span.comment= first_bookmark.comment
+  include navbar
+  div.container
+    h2.row.hatebu-who
+      div.col-sm-12
+        div.row
+          div.col-xs-3.col-sm-1.icon
+            - icon = "http://cdn1.www.st-hatena.com/users/"+user.id.slice(0,2)+"/"+user.id+"/profile.gif"
+            img.icon(src=icon)
+          div.col-xs-9.col-sm-11.name
+            div.user-id= user.id
+            a(href="http://b.hatena.ne.jp/#{user.id}/follow.follow", target="_blank").btn.btn-default.btn-xs お気に入りに追加
+    div.row.hatebu-profile
+      div.col-sm-3
+        div.panel.panel-primary.bookmark-status
+          div.panel-heading 
+            h3.panel-title はてブ利用状況
+          - attrs = [{name:"bookmark_count", title:"ブックマーク数"}, {name:"favorites_count", title:"お気に入り数"}, {name:"favorited_count", title:"お気に入られ数"}, {name:"stared_count", title:"累計はてなスター数"}]
+          table.table.table-striped
+            tbody
+              each attr in attrs
+                tr(id="#{user.id}-#{attr.name}")
+                  td.attr-name= attr.title
+                  td.attr-value
+                    strong= user.profile[attr.name]
+      div.col-sm-4
+        div.panel.panel-primary.bookmark-words
+          div.panel-heading
+            h3.panel-title 最近のブクマ傾向
+          div.list-group
+            div.list-group-item
+              h4.list-group-item-heading タイトルの特徴語
+              p.list-group-item-text ...
+            div.list-group-item
+              h4.list-group-item-heading はてなキーワード
+              p.list-group-item-text ...
+            div.list-group-item
+              h4.list-group-item-heading よく使うタグ
+              p.list-group-item-text ...
+      div.col-sm-5
+        div.panel.panel-info.first-bookmark
+          div.panel-heading
+            h3.panel-title 一番最初のブックマーク
+          div.panel-body
+            - first_bookmark = user.profile.first_bookmark
+            - time = first_bookmark.timestamp
+            - timeStr = time.getFullYear()+"/"+(time.getMonth()+1)+"/"+time.getDay()
+            h2.first-time= timeStr
+            h3
+              a(href=first_bookmark.entry_link)
+                span.title= first_bookmark.entry_title
+              span.comment= first_bookmark.comment
+    h1.row.hatebu-friends
+block append scripts
+  script(type="text/javascript")
+      include index_script
