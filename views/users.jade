@@ -1,8 +1,26 @@
 extends layout/bootstrap.jade
-mixin list-user(user)
-  user.
+mixin user-tr(user)
+  tr
+    td
+      - icon = "http://cdn1.www.st-hatena.com/users/"+user.id.slice(0,2)+"/"+user.id+"/profile_s.gif"
+      img.icon(src=icon)
+      span.user-id= user.id
+    td= user.profile.bookmark_count
+    td= user.profile.favorites_count
+    td= user.profile.favorited_count
+    td= user.profile.stared_count
+    td= user.profile.first_bookmark.timestamp
 block body
   include navbar
   div.container
-    each user in users
-      div.user-id= user.id
+    table.table.table-striped.user-list
+      thead
+        th ID
+        th ブックマーク数
+        th お気に入り数
+        th お気に入られ数
+        th 累計はてなスター数
+        th はてブ利用開始日
+      tbody
+        each user in users
+          mixin user-tr(user)
