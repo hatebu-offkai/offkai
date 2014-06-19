@@ -1,8 +1,7 @@
 config = require "config"
 mongoose = require "mongoose"
 connection = mongoose.connect "mongodb://#{config.mongodb.host}/#{config.mongodb.db}"
-userModel = require "../models/user"
-User = connection.model("User", userModel.userSchema)
+{User} = require "../models/user"
 
 request = require "request"
 cheerio = require "cheerio"
@@ -64,6 +63,7 @@ class HatenaClient
         else
           console.log "bookmark failed", err
           console.log resp.statusCode
+          @finishCallback()
   parseFirstBookmark: ($) ->
     console.log "parseFirstBookmark"
     user = @user
@@ -91,6 +91,7 @@ class HatenaClient
         else
           console.log "first bookmark failed", err
           console.log resp.statusCode
+          @finishCallback()
   updateUserData: (done) ->
     @finishCallback = done
     @getBookmarkInfo()
