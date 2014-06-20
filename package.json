@@ -24,6 +24,10 @@
     "morgan": "^1.1.1",
     "passport": "^0.2.0",
     "passport-hatena": "0.0.2",
-    "yaml": "^0.2.3"
+    "yaml": "^0.2.3",
+    "jade": "*",
+    "coffee-script": "*",
+    "request": "*",
+    "cheerio": "*"
   }
 }
