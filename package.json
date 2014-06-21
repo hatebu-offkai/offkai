@@ -5,8 +5,7 @@
   "main": "index.coffee",
   "scripts": {
     "preinstall": "npm install coffee-script -g",
-    "start": "coffee index.coffee",
-    "test": "coffee scripts/fetch_hatena_data.coffee"
+    "start": "coffee index.coffee"
   },
   "private": true,
   "author": "",

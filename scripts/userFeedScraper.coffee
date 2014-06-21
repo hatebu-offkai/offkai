@@ -57,8 +57,8 @@ fetch = (id, done) ->
   console.log id
   user = User.find {id:id}, (err, user) ->
     if !err
-      client = new UserFeedScraper user
-      client.run(done)
+      scraper = new UserFeedScraper user
+      scraper.run(done)
 finishCallback = (err) ->
   mongoose.connection.close()
   process.exit()

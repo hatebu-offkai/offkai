@@ -6,6 +6,8 @@ Schema = mongoose.Schema
 bookmarkEntrySchema = new Schema
   url: String
   title: String
+  bookmark_count: Number
+  category: String
   title_words: [String]
   hatena_keywords: [String]
   created: Date

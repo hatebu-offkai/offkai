@@ -11,28 +11,38 @@ async = require "async"
 
 class EntryPageScraper
   constructor: (@entry)->
+    console.log @entry.url
   run: (done) ->
     @finishCallback = done
     @getBookmarkInfo()
-  getBookmarkInfo: (done) ->
+  getBookmarkInfo: () ->
+    baseUrl = "http://b.hatena.ne.jp/entry/"
+    if @entry.url.match(/^https/)
+      baseUrl = baseUrl+"s/"
     chopUrl = @entry.url.replace(/https?:\/\//, "")
-    bookmarkInfoURL = "http://b.hatena.ne.jp/entry/"+chopUrl
-    request bookmarkInfoURL, (err, resp, body) =>
+    bookmarkInfoUrl = baseUrl+chopUrl
+    console.log "request", bookmarkInfoUrl
+    request bookmarkInfoUrl, (err, resp, body) =>
       if !err && resp.statusCode == 200
         $ = cheerio.load body
-        @parseBookmarkInfo url, $
-  parseBookmarkInfo: (url, $, done) ->
+        @parseBookmarkInfo $
+      else
+        console.log "error", err, resp.statusCode
+        @finishCallback()
+  parseBookmarkInfo: ($) ->
     data =
       count: $("ul.entry-page-unit li.entry-unit ul.users li strong a span").text()
       category: $(".entry-contents ul.entry-data li.category a").text()
       keywords: $("a.keyword")
+    console.log @entry.url, @entry.title
     console.log data
+    @finishCallback()
 
-BookmarkEntry.find {}, {}, {limit:1} (err, entries) ->
-  iterate (entry, done) ->
+BookmarkEntry.find {}, {}, {limit:1}, (err, entries) ->
+  iterate = (entry, done) ->
     scraper = new EntryPageScraper entry
     scraper.run(done)
-  finish (err) ->
+  finish = (err) ->
     mongoose.connection.close()
     process.exit()
   async.eachSeries entries, iterate, finish
