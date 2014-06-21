@@ -8,20 +8,31 @@ UserBookmark = bookmarkModel.UserBookmark
 
 request = require "request"
 cheerio = require "cheerio"
-xml2js = require "xml2js"
 async = require "async"
 
-
-class HatenaClient
+class UserPageScraper
   constructor: (@user)->
     @bookmarkURL = "http://b.hatena.ne.jp/#{@user.id}/"
-    @feedURL = "http://b.hatena.ne.jp/#{@user.id}/atomfeed"
     @user.profile.misc =
       new_page: null
       first_bookmark_offset: 0
       bookmarks_per_page: null
       feed_offset: 0
-
+  run: (done) ->
+    @finishCallback = done
+    @getUserBookmarkInfo()
+  getUserBookmarkInfo: ->
+    console.log "request", @bookmarkURL
+    request @bookmarkURL
+      , (err, resp, body)=>
+        if !err && resp.statusCode == 200
+          $ = cheerio.load body
+          @parseUserBookmarkInfo $
+          @getFirstBookmark()
+        else
+          console.log "bookmark failed", err
+          console.log resp.statusCode
+          @finishCallback()
   parseUserBookmarkInfo: ($) ->
     console.log "parseUserBookmarkInfo"
     user = @user
@@ -60,16 +71,16 @@ class HatenaClient
       first_bookmark_offset = (Math.floor(Number(user.profile.bookmark_count) / bookmarks_per_page) * bookmarks_per_page)
       user.profile.misc.first_bookmark_offset = first_bookmark_offset
     user.profile.misc.bookmarks_per_page = bookmarks_per_page
-  getUserBookmarkInfo: ->
-    console.log "request", @bookmarkURL
-    request @bookmarkURL
+  getFirstBookmark: ()->
+    firstBookmarkUrl = @bookmarkURL + "?of=#{@user.profile.misc.first_bookmark_offset}"
+    console.log "request", firstBookmarkUrl
+    request firstBookmarkUrl
       , (err, resp, body)=>
         if !err && resp.statusCode == 200
           $ = cheerio.load body
-          @parseUserBookmarkInfo $
-          @getFirstBookmark()
+          @parseFirstBookmark $
         else
-          console.log "bookmark failed", err
+          console.log "first bookmark failed", err
           console.log resp.statusCode
           @finishCallback()
   parseFirstBookmark: ($) ->
@@ -88,67 +99,6 @@ class HatenaClient
     user.profile.first_bookmark.timestamp = Date.parse $("li[data-eid]:last-child li[data-user=\"#{user.id}\"] .timestamp")[0].children[0].data
     console.log user.profile
     user.save(@finishCallback)
-  getFirstBookmark: ()->
-    firstBookmarkUrl = @bookmarkURL + "?of=#{@user.profile.misc.first_bookmark_offset}"
-    console.log "request", firstBookmarkUrl
-    request firstBookmarkUrl
-      , (err, resp, body)=>
-        if !err && resp.statusCode == 200
-          $ = cheerio.load body
-          @parseFirstBookmark $
-        else
-          console.log "first bookmark failed", err
-          console.log resp.statusCode
-          @finishCallback()
-  createUserBookmarkModel: (entry, data, next) ->
-    UserBookmark.findOrCreate {id:data.id}, (err, userBookmark) =>
-      userBookmark.user = @user
-      userBookmark.entry = entry
-      userBookmark.comment = data.comment
-      userBookmark.tags = data.tags
-      userBookmark.timestamp = data.timestamp
-      console.log userBookmark
-      userBookmark.save(next)
-  getRecentBookmarks: () ->
-    if @user.profile.misc.feed_offset == 40
-      @finishCallback()
-      return
-    feedUrl = @feedURL + "?of=#{@user.profile.misc.feed_offset}"
-    console.log "request", feedUrl
-    request feedUrl
-      , (err, resp, body) =>
-        xml2js.parseString body, (err, result) =>
-          fetchNextBookmarks = =>
-            @user.profile.misc.feed_offset += 20
-            @getRecentBookmarks()
-          saveOneEntry = (entry, done) =>
-            data =
-              id: entry.id[0]
-              url: entry.link[0]["$"].href
-              title: entry.title[0]
-              tags: entry["dc:subject"]
-              comment: entry.summary[0]
-              timestamp: Date.parse(entry.issued[0])
-            BookmarkEntry.findOrCreate {url:data.url, title:data.title}, (err, entry) =>
-              @createUserBookmarkModel entry, data, done
-          async.eachSeries result.feed.entry, saveOneEntry, fetchNextBookmarks
-  parseBookmarkInfo: (url, $) ->
-    count = $("ul.entry-page-unit li.entry-unit ul.users li strong a span").text()
-    category = $(".entry-contents ul.entry-data li.category a").text()
-    keywords = $("a.keyword")
-  getBookmarkInfo: (url) ->
-    # remove "http(s)?://"
-    chopUrl = url.replace(/https?:\/\//, "")
-    bookmarkInfoURL = "http://b.hatena.ne.jp/entry/"+url
-    request bookmarkInfoURL, (err, resp, body) =>
-      if !err && resp.statusCode == 200
-        $ = cheerio.load body
-        @parseBookmarkInfo url, $
-    
-  updateUserData: (done) ->
-    @finishCallback = done
-    #@getUserBookmarkInfo()
-    @getRecentBookmarks()
 
 user_ids = ["yuiseki"]
 #user_ids = ["netcraft", "Lhankor_Mhy", "kamayan1980", "nisemono_san", "TERRAZI", "atq", "sabacurry", "nkoz", "hnnhn2", "kiku-chan", "Rlee1984", "yuiseki", "AnonymousLifeforms", "hyaknihyak", "dora-kou", "whkr", "kybernetes", "hinaho", "shields-pikes",  "pero_pero", "K_SHIKI", "yo-mei777", "rgfx", "new3", "kazoo_oo", "seagullwhite", "bulldra", "tomad"]
@@ -156,8 +106,8 @@ fetch = (id, done) ->
   console.log id
   user = User.findOrCreate {id:id}, (err, user) ->
     if !err
-      client = new HatenaClient user
-      client.updateUserData(done)
+      client = new UserPageScraper user
+      client.run(done)
 finishCallback = (err) ->
   mongoose.connection.close()
   process.exit()
