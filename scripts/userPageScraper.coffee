@@ -30,8 +30,7 @@ class UserPageScraper
           @parseUserBookmarkInfo $
           @getFirstBookmark()
         else
-          console.log "bookmark failed", err
-          console.log resp.statusCode
+          console.log "request failed", resq.statusCode, err
           @finishCallback()
   parseUserBookmarkInfo: ($) ->
     console.log "parseUserBookmarkInfo"
@@ -100,15 +99,14 @@ class UserPageScraper
     console.log user.profile
     user.save(@finishCallback)
 
-user_ids = ["yuiseki"]
 #user_ids = ["netcraft", "Lhankor_Mhy", "kamayan1980", "nisemono_san", "TERRAZI", "atq", "sabacurry", "nkoz", "hnnhn2", "kiku-chan", "Rlee1984", "yuiseki", "AnonymousLifeforms", "hyaknihyak", "dora-kou", "whkr", "kybernetes", "hinaho", "shields-pikes",  "pero_pero", "K_SHIKI", "yo-mei777", "rgfx", "new3", "kazoo_oo", "seagullwhite", "bulldra", "tomad"]
-fetch = (id, done) ->
-  console.log id
-  user = User.findOrCreate {id:id}, (err, user) ->
-    if !err
-      client = new UserPageScraper user
-      client.run(done)
-finishCallback = (err) ->
-  mongoose.connection.close()
-  process.exit()
-async.eachSeries(user_ids, fetch, finishCallback)
+User.find {id:"yuiseki"}, (err, users)->
+  iterate = (user, done) ->
+    console.log user.id
+    client = new UserPageScraper user
+    client.run(done)
+  finish = (err) ->
+    mongoose.connection.close()
+    process.exit()
+  if !err
+    async.eachSeries(users, iterate, finish)
