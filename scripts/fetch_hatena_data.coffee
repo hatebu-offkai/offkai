@@ -2,19 +2,27 @@ config = require "config"
 mongoose = require "mongoose"
 connection = mongoose.connect "mongodb://#{config.mongodb.host}/#{config.mongodb.db}"
 {User} = require "../models/user"
+{Bookmark} = require "../models/user"
 
 request = require "request"
 cheerio = require "cheerio"
+xml2js = require "xml2js"
 async = require "async"
+
 
 class HatenaClient
   constructor: (@user)->
     @bookmarkURL = "http://b.hatena.ne.jp/#{@user.id}/"
     @feedURL = "http://b.hatena.ne.jp/#{@user.id}/atomfeed"
+    @user.profile.misc =
+      new_page: null
+      first_bookmark_offset: 0
+      bookmarks_per_page: null
+      feed_offset: 0
+
   parseBookmarkInfo: ($) ->
     console.log "parseBookmarkInfo"
     user = @user
-    user.profile.misc = {}
     user.profile.misc.new_page = $("#hatena-bookmark-user-page").length
     if user.profile.misc.new_page
       li_selector = "#profile-count-navi dl"
@@ -48,9 +56,7 @@ class HatenaClient
     if !pager_next then bookmarks_per_page = 0 else bookmarks_per_page = $('.pager-next')[0].children[0].data.replace(/\D/g, '')
     if bookmarks_per_page
       first_bookmark_offset = (Math.floor(Number(user.profile.bookmark_count) / bookmarks_per_page) * bookmarks_per_page)
-    else
-      first_bookmark_offset = 0
-    user.profile.misc.first_bookmark_offset = first_bookmark_offset
+      user.profile.misc.first_bookmark_offset = first_bookmark_offset
     user.profile.misc.bookmarks_per_page = bookmarks_per_page
   getBookmarkInfo: ->
     console.log "request", @bookmarkURL
@@ -92,11 +98,44 @@ class HatenaClient
           console.log "first bookmark failed", err
           console.log resp.statusCode
           @finishCallback()
+  getRecentBookmarks: () ->
+    if @user.profile.misc.feed_offset == 1000
+      @finishCallback()
+      return
+    feedUrl = @feedURL + "?of=#{@user.profile.misc.feed_offset}"
+    request feedUrl
+      , (err, resp, body) =>
+        xml2js.parseString body, (err, result) =>
+          for entry in result.feed.entry
+            tags = null
+            if entry["dc:subject"]?
+              tags = entry["dc:subject"]
+            Bookmark.count {id:entry.id}, (err, count) ->
+              if err?
+                return
+              if count == 0
+                # create
+                bookmark = new Bookmark()
+                bookmark.user = @user
+                bookmark.title = entry.title[0]
+                bookmark.comment = entry.summary[0]
+                bookmark.timestamp = entry.issued[0]
+                bookmark.tags = entry["dc:subject"]
+                bookmark.save()
+              else
+                # exists, stop
+                @finishCallback()
+            console.log entryObj
+          @user.profile.misc.feed_offset += 20
+          @getRecentBookmarks()
+    
+
   updateUserData: (done) ->
     @finishCallback = done
-    @getBookmarkInfo()
+    #@getBookmarkInfo()
+    @getRecentBookmarks()
 
-user_ids = ["TERRAZI", "bulldra", "hyaknihyak", "kiku-chan"]
+user_ids = ["yuiseki"]
 #user_ids = ["netcraft", "Lhankor_Mhy", "kamayan1980", "nisemono_san", "TERRAZI", "atq", "sabacurry", "nkoz", "hnnhn2", "kiku-chan", "Rlee1984", "yuiseki", "AnonymousLifeforms", "hyaknihyak", "dora-kou", "whkr", "kybernetes", "hinaho", "shields-pikes",  "pero_pero", "K_SHIKI", "yo-mei777", "rgfx", "new3", "kazoo_oo", "seagullwhite", "bulldra", "tomad"]
 fetch = (id, done) ->
   console.log id

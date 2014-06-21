@@ -66,6 +66,14 @@ app.get "/users", (req, res) ->
     if users?
       res.render "users", {pretty:true, users:users}
 
+app.get "/users.json", (req, res) ->
+  User.find {}, {}, {sort:{id:1}}, (err, users) ->
+    if err?
+      console.log err
+      res.send 500, "Error"
+    if users?
+      res.send {users:users}
+
 app.get "/user/:id", (req, res) ->
   User.findOne {id:req.params.id}, (err, user) ->
     if err?

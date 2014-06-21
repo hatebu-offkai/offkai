@@ -24,6 +24,7 @@
     "morgan": "^1.1.1",
     "passport": "^0.2.0",
     "passport-hatena": "0.0.2",
+    "xml2js": "^0.4.4",
     "yaml": "^0.2.3"
   }
 }

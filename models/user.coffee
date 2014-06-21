@@ -16,6 +16,7 @@ userSchema = new Schema
             entry_link: String
             comment: String
             timestamp: Date
+        main_category: String
         titles: [String]
         keywords: [String]
         tags: [String]
@@ -30,10 +31,12 @@ userSchema.pre "save", (next) ->
     next()
 
 userSchema.set "toJSON",
-    transform: (doc, ret, options)->
+    transform: (doc, user, options)->
         return {
-            id: ret.id
-            prifile: ret.profile
+            id: user.id
+            icon_n: "http://cdn1.www.st-hatena.com/users/"+user.id.slice(0,2)+"/"+user.id+"/profile.gif"
+            icon_s: "http://cdn1.www.st-hatena.com/users/"+user.id.slice(0,2)+"/"+user.id+"/profile_s.gif"
+            profile: user.profile
         }
 
 exports.userSchema = userSchema

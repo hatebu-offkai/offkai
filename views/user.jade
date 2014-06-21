@@ -1,13 +1,13 @@
 extends layout/bootstrap.jade
 block body
   include navbar
+  include userHelper
   div.container
     h2.row.hatebu-who
       div.col-sm-12
         div.row
           div.col-xs-3.col-sm-1.icon
-            - icon = "http://cdn1.www.st-hatena.com/users/"+user.id.slice(0,2)+"/"+user.id+"/profile.gif"
-            img.icon(src=icon)
+            img.icon(src=icon_n)
           div.col-xs-9.col-sm-11.name
             div.user-id= user.id
             a(href="http://b.hatena.ne.jp/#{user.id}/follow.follow", target="_blank").btn.btn-default.btn-xs お気に入りに追加
@@ -43,9 +43,6 @@ block body
           div.panel-heading
             h3.panel-title 一番最初のブックマーク
           div.panel-body
-            - first_bookmark = user.profile.first_bookmark
-            - time = first_bookmark.timestamp
-            - timeStr = time.getFullYear()+"/"+(time.getMonth()+1)+"/"+time.getDay()
             h2.first-time= timeStr
             h3
               a(href=first_bookmark.entry_link)

@@ -10,7 +10,7 @@ bookmarkSchema = new Schema
   hatena_keywords: [String]
   tags: [String]
   star_count: Number
-  bookmarked: Date
+  timestamp: Date
   created: Date
   updated: Date
 bookmarkSchema.plugin findOrCreate
