@@ -2,7 +2,9 @@ config = require "config"
 mongoose = require "mongoose"
 connection = mongoose.connect "mongodb://#{config.mongodb.host}/#{config.mongodb.db}"
 {User} = require "../models/user"
-{Bookmark} = require "../models/user"
+bookmarkModel = require "../models/bookmark"
+BookmarkEntry = bookmarkModel.BookmarkEntry
+UserBookmark = bookmarkModel.UserBookmark
 
 request = require "request"
 cheerio = require "cheerio"
@@ -98,36 +100,38 @@ class HatenaClient
           console.log "first bookmark failed", err
           console.log resp.statusCode
           @finishCallback()
+  createUserBookmarkModel: (entry, data, next) ->
+    UserBookmark.findOrCreate {id:data.id}, (err, userBookmark) =>
+      userBookmark.user = @user
+      userBookmark.entry = entry
+      userBookmark.comment = data.comment
+      userBookmark.tags = data.tags
+      userBookmark.timestamp = data.timestamp
+      console.log userBookmark
+      userBookmark.save(next)
   getRecentBookmarks: () ->
-    if @user.profile.misc.feed_offset == 1000
+    if @user.profile.misc.feed_offset == 40
       @finishCallback()
       return
     feedUrl = @feedURL + "?of=#{@user.profile.misc.feed_offset}"
+    console.log feedUrl
     request feedUrl
       , (err, resp, body) =>
         xml2js.parseString body, (err, result) =>
-          for entry in result.feed.entry
-            tags = null
-            if entry["dc:subject"]?
-              tags = entry["dc:subject"]
-            Bookmark.count {id:entry.id}, (err, count) ->
-              if err?
-                return
-              if count == 0
-                # create
-                bookmark = new Bookmark()
-                bookmark.user = @user
-                bookmark.title = entry.title[0]
-                bookmark.comment = entry.summary[0]
-                bookmark.timestamp = entry.issued[0]
-                bookmark.tags = entry["dc:subject"]
-                bookmark.save()
-              else
-                # exists, stop
-                @finishCallback()
-            console.log entryObj
-          @user.profile.misc.feed_offset += 20
-          @getRecentBookmarks()
+          fetchNextBookmarks = =>
+            @user.profile.misc.feed_offset += 20
+            @getRecentBookmarks()
+          saveOneEntry = (entry, done) =>
+            data =
+              id: entry.id[0]
+              url: entry.link[0]["$"].href
+              title: entry.title[0]
+              tags: entry["dc:subject"]
+              comment: entry.summary[0]
+              timestamp: Date.parse(entry.issued[0])
+            BookmarkEntry.findOrCreate {url:data.url, title:data.title}, (err, entry) =>
+              @createUserBookmarkModel entry, data, done
+          async.eachSeries result.feed.entry, saveOneEntry, fetchNextBookmarks
     
 
   updateUserData: (done) ->

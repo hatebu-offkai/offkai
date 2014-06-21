@@ -1,25 +1,32 @@
 mongoose = require "mongoose"
 findOrCreate = require "mongoose-findorcreate"
+helper = require "./modelHelper"
 Schema = mongoose.Schema
-bookmarkSchema = new Schema
-  user: {type:Schema.Types.ObjectId, ref:'User'}
+
+bookmarkEntrySchema = new Schema
   url: String
-  comment: String
   title: String
   title_words: [String]
   hatena_keywords: [String]
+  created: Date
+  updated: Date
+bookmarkEntrySchema.plugin findOrCreate
+bookmarkEntrySchema.pre "save", helper.updateDate
+exports.bookmarkEntrySchema = bookmarkEntrySchema
+BookmarkEntry = mongoose.model "BookmarkEntry", bookmarkEntrySchema
+exports.BookmarkEntry = BookmarkEntry
+
+userBookmarkSchema = new Schema
+  id: String
+  user: {type:Schema.Types.ObjectId, ref:'User'}
+  entry: {type:Schema.Types.ObjectId, ref:'BookmarkEntry'}
+  comment: String
   tags: [String]
-  star_count: Number
   timestamp: Date
   created: Date
   updated: Date
-bookmarkSchema.plugin findOrCreate
-bookmarkSchema.pre "save", (next) ->
-    if @isNew
-        @created = new Date()
-    @updated = new Date()
-    next()
-
-exports.bookmarkSchema = bookmarkSchema
-Bookmark = mongoose.model "Bookmark", bookmarkSchema
-exports.Bookmark = Bookmark
+userBookmarkSchema.plugin findOrCreate
+userBookmarkSchema.pre "save", helper.updateDate
+exports.userBookmarkSchema = userBookmarkSchema
+UserBookmark = mongoose.model "UserBookmark", userBookmarkSchema
+exports.UserBookmark = UserBookmark
