@@ -22,8 +22,8 @@ class HatenaClient
       bookmarks_per_page: null
       feed_offset: 0
 
-  parseBookmarkInfo: ($) ->
-    console.log "parseBookmarkInfo"
+  parseUserBookmarkInfo: ($) ->
+    console.log "parseUserBookmarkInfo"
     user = @user
     user.profile.misc.new_page = $("#hatena-bookmark-user-page").length
     if user.profile.misc.new_page
@@ -60,13 +60,13 @@ class HatenaClient
       first_bookmark_offset = (Math.floor(Number(user.profile.bookmark_count) / bookmarks_per_page) * bookmarks_per_page)
       user.profile.misc.first_bookmark_offset = first_bookmark_offset
     user.profile.misc.bookmarks_per_page = bookmarks_per_page
-  getBookmarkInfo: ->
+  getUserBookmarkInfo: ->
     console.log "request", @bookmarkURL
     request @bookmarkURL
       , (err, resp, body)=>
         if !err && resp.statusCode == 200
           $ = cheerio.load body
-          @parseBookmarkInfo $
+          @parseUserBookmarkInfo $
           @getFirstBookmark()
         else
           console.log "bookmark failed", err
@@ -114,7 +114,7 @@ class HatenaClient
       @finishCallback()
       return
     feedUrl = @feedURL + "?of=#{@user.profile.misc.feed_offset}"
-    console.log feedUrl
+    console.log "request", feedUrl
     request feedUrl
       , (err, resp, body) =>
         xml2js.parseString body, (err, result) =>
@@ -132,11 +132,22 @@ class HatenaClient
             BookmarkEntry.findOrCreate {url:data.url, title:data.title}, (err, entry) =>
               @createUserBookmarkModel entry, data, done
           async.eachSeries result.feed.entry, saveOneEntry, fetchNextBookmarks
+  parseBookmarkInfo: (url, $) ->
+    count = $("ul.entry-page-unit li.entry-unit ul.users li strong a span").text()
+    category = $(".entry-contents ul.entry-data li.category a").text()
+    keywords = $("a.keyword")
+  getBookmarkInfo: (url) ->
+    # remove "http(s)?://"
+    chopUrl = url.replace(/https?:\/\//, "")
+    bookmarkInfoURL = "http://b.hatena.ne.jp/entry/"+url
+    request bookmarkInfoURL, (err, resp, body) =>
+      if !err && resp.statusCode == 200
+        $ = cheerio.load body
+        @parseBookmarkInfo url, $
     
-
   updateUserData: (done) ->
     @finishCallback = done
-    #@getBookmarkInfo()
+    #@getUserBookmarkInfo()
     @getRecentBookmarks()
 
 user_ids = ["yuiseki"]
