@@ -84,6 +84,9 @@ app.get "/user/:id", (req, res) ->
     else
       res.send 404, "NotFound"
 
+app.get "/visualize", (req, res) ->
+  res.render "visualize", {pretty:true}
+
 if not module.parent
   server = http.createServer(app).listen(config.port)
   console.log "#{new Date()}, app start #{config.port}"
