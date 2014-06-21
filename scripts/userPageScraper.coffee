@@ -17,7 +17,6 @@ class UserPageScraper
       new_page: null
       first_bookmark_offset: 0
       bookmarks_per_page: null
-      feed_offset: 0
   run: (done) ->
     @finishCallback = done
     @getUserBookmarkInfo()

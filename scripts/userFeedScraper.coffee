@@ -16,6 +16,10 @@ class UserFeedScraper
     @feedURL = "http://b.hatena.ne.jp/#{@user.id}/atomfeed"
     @offsetUnit = 20
     @maxOffset = 1000
+    console.log @user
+    console.log @user.profile
+    @user.profile.misc =
+      feed_offset: 0
   run: (done) ->
     @finishCallback = done
     @getRecentBookmarks()
@@ -52,14 +56,15 @@ class UserFeedScraper
       console.log userBookmark
       userBookmark.save(next)
 
-user_ids = ["yuiseki"]
-fetch = (id, done) ->
-  console.log id
-  user = User.find {id:id}, (err, user) ->
-    if !err
-      scraper = new UserFeedScraper user
-      scraper.run(done)
-finishCallback = (err) ->
-  mongoose.connection.close()
-  process.exit()
-async.eachSeries(user_ids, fetch, finishCallback)
+User.find {id:"yuiseki"}, (err, users)->
+  iterate = (user, done) ->
+    scraper = new UserFeedScraper user
+    scraper.run(done)
+  finish = (err) ->
+    mongoose.connection.close()
+    process.exit()
+  if !err
+    async.eachSeries(users, iterate, finish)
+
+
+

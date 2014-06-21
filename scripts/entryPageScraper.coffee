@@ -45,7 +45,7 @@ class EntryPageScraper
     console.log @entry
     @entry.save(@finishCallback)
 
-BookmarkEntry.find {}, {}, {limit:1}, (err, entries) ->
+BookmarkEntry.find {timestamp:{$exists:false}}, {}, {limit:0}, (err, entries) ->
   iterate = (entry, done) ->
     scraper = new EntryPageScraper entry
     scraper.run(done)
