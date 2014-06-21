@@ -30,13 +30,20 @@ class EntryPageScraper
         console.log "error", err, resp.statusCode
         @finishCallback()
   parseBookmarkInfo: ($) ->
-    data =
-      count: $("ul.entry-page-unit li.entry-unit ul.users li strong a span").text()
-      category: $(".entry-contents ul.entry-data li.category a").text()
-      keywords: $("a.keyword")
-    console.log @entry.url, @entry.title
-    console.log data
-    @finishCallback()
+    count = $("ul.entry-page-unit li.entry-unit ul.users li strong a span").text()
+    category = $("ul.entry-page-unit > li > div.entry-contents > ul.entry-data > li.category > a").text()
+    keywords = []
+    $("a.keyword").each (idx, elem) ->
+      k = $(elem).text()
+      if keywords.indexOf(k)==-1
+        keywords.push k
+    timestamp = Date.parse $("ul.entry-page-unit > li > div.entry-contents > ul.entry-data > li.date").text()
+    @entry.bookmark_count = count
+    @entry.category = category
+    @entry.hatena_keywords = keywords
+    @entry.timestamp = timestamp
+    console.log @entry
+    @entry.save(@finishCallback)
 
 BookmarkEntry.find {}, {}, {limit:1}, (err, entries) ->
   iterate = (entry, done) ->

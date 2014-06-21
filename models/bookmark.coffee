@@ -10,6 +10,7 @@ bookmarkEntrySchema = new Schema
   category: String
   title_words: [String]
   hatena_keywords: [String]
+  timestamp: Date
   created: Date
   updated: Date
 bookmarkEntrySchema.plugin findOrCreate
