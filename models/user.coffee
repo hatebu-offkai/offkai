@@ -18,6 +18,7 @@ userSchema = new Schema
             comment: String
             timestamp: Date
         main_category: String
+        sub_category: String
         titles: [String]
         keywords: [String]
         tags: [String]

@@ -15,7 +15,7 @@ class UserFeedScraper
   constructor: (@user)->
     @feedURL = "http://b.hatena.ne.jp/#{@user.id}/atomfeed"
     @offsetUnit = 20
-    @maxOffset = 1000
+    @maxOffset = 400
     console.log @user
     console.log @user.profile
     @user.profile.misc =

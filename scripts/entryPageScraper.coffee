@@ -20,6 +20,7 @@ class EntryPageScraper
     if @entry.url.match(/^https/)
       baseUrl = baseUrl+"s/"
     chopUrl = @entry.url.replace(/https?:\/\//, "")
+    chopUrl = chopUrl.replace(/#/, "%23")
     bookmarkInfoUrl = baseUrl+chopUrl
     console.log "request", bookmarkInfoUrl
     request bookmarkInfoUrl, (err, resp, body) =>

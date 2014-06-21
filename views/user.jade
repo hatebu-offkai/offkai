@@ -30,6 +30,10 @@ block body
             h3.panel-title 最近のブクマ傾向
           div.list-group
             div.list-group-item
+              h4.list-group-item-heading カテゴリー
+              p.list-group-item-text.
+                #{user.profile.main_category}, #{user.profile.sub_category}
+            div.list-group-item
               h4.list-group-item-heading タイトルの特徴語
               p.list-group-item-text ...
             div.list-group-item
