@@ -15,9 +15,7 @@ class UserFeedScraper
   constructor: (@user)->
     @feedURL = "http://b.hatena.ne.jp/#{@user.id}/atomfeed"
     @offsetUnit = 20
-    @maxOffset = 400
-    console.log @user
-    console.log @user.profile
+    @maxOffset = 500
     @user.profile.misc =
       feed_offset: 0
   run: (done) ->
@@ -43,9 +41,14 @@ class UserFeedScraper
               tags: entry["dc:subject"]
               comment: entry.summary[0]
               timestamp: Date.parse(entry.issued[0])
-            BookmarkEntry.findOrCreate {url:data.url, title:data.title}, (err, entry) =>
+            BookmarkEntry.findOrCreate {url:data.url, title:data.title}, (err, entry, created) =>
               @saveUserBookmarkModel entry, data, done
-          async.eachSeries result.feed.entry, saveOneEntry, fetchNextBookmarks
+              if !created
+                @finishCallback()
+          if result.feed.entry?
+            async.eachSeries result.feed.entry, saveOneEntry, fetchNextBookmarks
+          else
+            @finishCallback()
   saveUserBookmarkModel: (entry, data, next) ->
     UserBookmark.findOrCreate {id:data.id}, (err, userBookmark) =>
       userBookmark.user = @user
@@ -53,10 +56,9 @@ class UserFeedScraper
       userBookmark.comment = data.comment
       userBookmark.tags = data.tags
       userBookmark.timestamp = data.timestamp
-      console.log userBookmark
       userBookmark.save(next)
 
-User.find {id:"yuiseki"}, (err, users)->
+User.find {}, (err, users)->
   iterate = (user, done) ->
     scraper = new UserFeedScraper user
     scraper.run(done)
