@@ -31,14 +31,19 @@ block body
           div.list-group
             div.list-group-item
               h4.list-group-item-heading カテゴリー
-              p.list-group-item-text.
-                #{user.profile.main_category}, #{user.profile.sub_category}
+              p.list-group-item-text
+                each counter in user.profile.categories
+                  span #{counter.word}: #{counter.count}
+                  br
             div.list-group-item
               h4.list-group-item-heading タイトルの特徴語
               p.list-group-item-text ...
             div.list-group-item
               h4.list-group-item-heading はてなキーワード
-              p.list-group-item-text ...
+              p.list-group-item-text
+                each counter in user.profile.keywords
+                  span #{counter.word}: #{counter.count}
+                  br
             div.list-group-item
               h4.list-group-item-heading よく使うタグ
               p.list-group-item-text ...

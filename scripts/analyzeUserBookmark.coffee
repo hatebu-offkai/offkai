@@ -13,8 +13,7 @@ class UserAnalyzer
   constructor: (@user) ->
   run: (done) ->
     @finishCallback = done
-    #@countEntriesCategory()
-    @countHatenaKeywords()
+    @countEntriesCategory()
   getUserBookmarkEntries: (callback)->
     UserBookmark.find({user:@user},"entry").exec (err, result) =>
       if err?
@@ -41,10 +40,10 @@ class UserAnalyzer
       finishBookmark = (err) =>
         counted = _.map counter, (v,k)->[k,v]
         counted.sort (a, b)->b[1] - a[1]
-        @user.profile.main_category = counted[0][0]
-        @user.profile.sub_category = counted[1][0]
-        console.log @user
-        @user.save @finishCallback
+        counted = _.map counted, (e)->{word:e[0], count:e[1]}
+        @user.profile.categories = counted
+        @user.save =>
+          @countHatenaKeywords()
       async.eachSeries bookmarks, iterateBookmark, finishBookmark
   countHatenaKeywords: ->
     @getUserBookmarkEntries (bookmarks)=>
@@ -60,12 +59,16 @@ class UserAnalyzer
       finishBookmark = (err) =>
         counted = _.map counter, (v,k)->[k,v]
         counted.sort (a, b)->b[1] - a[1]
-        console.log counted.slice(0, 19)
-        @finishCallback()
+        counted = counted.slice(0, 19)
+        counted = _.map counted, (e)->{word:e[0], count:e[1]}
+        @user.profile.keywords = counted
+        @user.save =>
+          @finishCallback()
       async.eachSeries bookmarks, iterateBookmark, finishBookmark
 
-User.find({id:"yuiseki"}).exec (err, users)->
+User.find().exec (err, users)->
   iterate = (user, done)->
+    console.log user.id
     client = new UserAnalyzer user
     client.run(done)
   finish = (err) ->
