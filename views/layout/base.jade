@@ -14,7 +14,8 @@ html(lang="ja", prefix="og: http://ogp.me/ns# fb: http://www.facebook.com/2008/f
     block scripts
       - cdnjs = "//cdnjs.cloudflare.com/ajax/libs/"
       - list = []
-      - list.push(cdnjs+"zepto/1.1.3/zepto.min.js")
+      - list.push(cdnjs+"jquery/2.1.1/jquery.min.js")
+      - list.push(cdnjs+"jquery-easing/1.3/jquery.easing.min.js")
       each src in list
           script(src=src, type='text/javascript')
 
