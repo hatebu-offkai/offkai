@@ -6,7 +6,6 @@ bookmarkModel = require "../models/bookmark"
 BookmarkEntry = bookmarkModel.BookmarkEntry
 UserBookmark = bookmarkModel.UserBookmark
 
-util = require "util"
 async = require "async"
 _ = require "underscore"
 
@@ -33,7 +32,7 @@ class UserAnalyzer
         console.log err
         @finishCallback()
         return
-      async.applyEach [@countBookmarksCategory, @countBookmarksHatenaKeywords], bookmarks, ->
+      async.applyEach [@countBookmarksCategory, @countBookmarksHatenaKeywords, @extractBookmarksFeatureWord], bookmarks, ->
         callback()
   analyzeUserSimilarity: (callback)->
     User.find({_id:{$ne:@user._id}}).exec (err, users) =>
