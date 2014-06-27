@@ -5,6 +5,7 @@ connection = mongoose.connect "mongodb://#{config.mongodb.host}/#{config.mongodb
 
 request = require "request"
 async = require "async"
+_ = require "underscore"
 
 class UserStarClient
   constructor: (@user)->
@@ -19,8 +20,15 @@ class UserStarClient
       , (err, resp, body) =>
         if !err && resp.statusCode == 200
           json = JSON.parse body
-          @user.profile.stared_count = json.star_count
-          @user.save(@finishCallback)
+          stared_count = parseInt(json.star_count, 10)
+          @user.profile.stared_count = stared_count
+          stared_count_detail = {blue:0, red:0, green:0, yellow:0}
+          _.extend stared_count_detail, json.count
+          @user.profile.stared_count_detail = stared_count_detail
+          @user.save (err)=>
+            console.log err
+            console.log @user.profile.stared_count, @user.profile.stared_count_detail
+            @finishCallback()
         else
           console.log "request failed", resq.statusCode, err
           @finishCallback()
@@ -35,4 +43,4 @@ User.find {}, (err, users)->
     mongoose.connection.close()
     process.exit()
   if !err
-    async.eachSeries users, iterate, finish
+    async.eachSeries(users, iterate, finish)

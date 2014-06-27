@@ -1,0 +1,95 @@
+extends layout/base.jade
+
+block style
+  style(type="text/css", media="screen,print").
+    html,body,div {margin:0px;padding:0px;}
+    body {
+      -webkit-print-color-adjust: exact;
+      background-color:blue !important;
+    }
+    .page-break {
+      page-break-before: always;
+      visibility: hidden;
+      height: 0;
+    }
+    .namecard {
+      position: relative;
+      padding:9px 22px;
+      width: 325px;
+      height: 500px;
+      float:left;
+      background-color:blue !important;
+      background-image: url("/static/namecard.jpg") !important;
+      background-size: cover;
+      background-repeat: no-repeat;
+      border: 1px dotted black;
+    }
+    .namecard h2.user-id {
+      margin-top: 34px;
+      margin-left: 117px;
+      font-size: 20px;
+      color: white;
+    }
+    .top {
+      margin-top: 47px;
+    }
+    .top-left {
+      float: left;
+      width: 150px;
+    }
+    .top-left div.value {
+      float: right;
+      clear: both;
+    }
+    .top-left .upper .bookmark_count {
+      margin: 0px 0 5px 0;
+    }
+    .top-left .upper .favorited_count {
+      margin: 14px 0 5px 0;
+    }
+    .top-left .downer {
+      margin-top: 100px;
+    }
+    .top-left .downer .value {
+      margin: 4px 0;
+    }
+    .top-right {
+      float: right;
+    }
+    .icon-wrap {
+      width: 143px;
+      height: 143px;
+    }
+    .icon-wrap img {
+      width: 143px;
+      height: 143px;
+    }
+
+mixin user-namecard(user)
+  include userHelper
+  div.namecard
+    h2.user-id #{user.id}
+    div.top
+      div.top-left
+        div.upper
+          div.value.bookmark_count= user.profile.bookmark_count
+          div.value.favorited_count= user.profile.favorited_count
+        div.downer
+          div.value= user.profile.stared_count_detail.blue
+          div.value= user.profile.stared_count_detail.red
+          div.value= user.profile.stared_count_detail.green
+          div.value= user.profile.stared_count_detail.yellow
+      div.top-right
+        div.icon-wrap
+          img.icon(src=icon_n)
+
+block body
+  each user, i in users
+    mixin user-namecard(user)
+    if ((i+1) % 4)==0
+      hr.page-break
+
+
+
+
+

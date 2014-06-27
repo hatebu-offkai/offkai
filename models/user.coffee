@@ -12,6 +12,7 @@ userSchema = new Schema
     favorites_count: Number
     favorited_count: Number
     stared_count: Number
+    stared_count_detail: Schema.Types.Mixed
     first_bookmark:
       entry_title: String
       entry_link: String

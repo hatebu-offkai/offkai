@@ -63,6 +63,7 @@ User.find {}, (err, users)->
     scraper = new UserFeedScraper user
     scraper.run(done)
   finish = (err) ->
+    console.log "finish"
     mongoose.connection.close()
     process.exit()
   if !err
