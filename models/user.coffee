@@ -22,6 +22,8 @@ userSchema = new Schema
     keywords: [Schema.Types.Mixed]
     titles: [Schema.Types.Mixed]
     tags: [Schema.Types.Mixed]
+    similarities:
+      keyword: [Schema.Types.Mixed]
     good_users: [String]
   created: Date
   updated: Date
