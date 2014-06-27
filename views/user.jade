@@ -44,12 +44,16 @@ block body
                 each counter in user.profile.keywords
                   span #{counter.word}: #{counter.count}
                   br
+              hr
+              h5.list-group-item-heading はてなキーワードが似ているユーザー
+              ol
+                - keyword_recommend_users = user.profile.similarities.keyword.slice(0,3)
+                each guser in keyword_recommend_users
+                  li
+                    a(href="/user/#{guser.id}")= guser.id
             div.list-group-item
               h4.list-group-item-heading よく使うタグ
               p.list-group-item-text ...
-            div.list-group-item
-              h4.list-group-item-heading 似てるユーザー
-              p.list-group-item= user.profile.good_users[0]
       div.col-sm-5
         div.panel.panel-info.first-bookmark
           div.panel-heading

@@ -92,21 +92,18 @@ class UserAnalyzer
       magA = magnitude vecA
       magB = magnitude vecB
       return product / (magA * magB)
-    goodUser = (similarities) ->
-      biggest = {value: 0}
-      for s in similarities
-        biggest = s if s.value > biggest.value
-      return biggest.id
     updateUserSimilarities = (user, opponent, similarity) ->
       similarities = user.profile.similarities ? {}
       similarities.keyword ?= []
       similarities.keyword = similarities.keyword.filter (v) ->
         return v.id != opponent.id
       similarities.keyword.push {id: opponent.id, value: similarity}
+      sorting = _.map similarities.keyword, (e)-> [e.id, e.value]
+      sorting.sort (a,b)->b[1] - a[1]
+      sorted = _.map sorting, (e)->{id:e[0], value:e[1]}
+      console.log sorted
+      similarities.keyword = sorted
       user.profile.similarities = similarities
-      user.profile.good_users = []
-      user.profile.good_users.push goodUser(similarities.keyword)
-      console.log user.profile.good_users
       return user
     @getUsers (users)=>
       iterateUser = (u, done) =>
