@@ -28,6 +28,13 @@ class UserAnalyzer
           @finishCallback()
           return
         callback bookmarks
+  getUsers: (callback) ->
+    User.find({_id:{$ne:@user._id}}).exec (err, users) =>
+      if err?
+        console.log err
+        @finishCallback()
+        return
+      callback users
   countEntriesCategory: ->
     @getUserBookmarkEntries (bookmarks)=>
       counter = {}
@@ -63,9 +70,55 @@ class UserAnalyzer
         counted = _.map counted, (e)->{word:e[0], count:e[1]}
         @user.profile.keywords = counted
         @user.save =>
-          @finishCallback()
+          @calculateKeywordSimilarity()
       async.eachSeries bookmarks, iterateBookmark, finishBookmark
-
+  calculateKeywordSimilarity: ->
+    cosineSimilarity = (a, b) ->
+      dict = {}
+      dict[elem.word] = true for elem in a
+      dict[elem.word] = true for elem in b
+      arrA = {}
+      arrB = {}
+      arrA[elem.word] = elem.count for elem in a
+      arrB[elem.word] = elem.count for elem in b
+      vecA = (arrA[term] ? 0 for term of dict)
+      vecB = (arrB[term] ? 0 for term of dict)
+      product = 0
+      product += vecA[i] * vecB[i] for term, i in vecA
+      magnitude = (vec) ->
+        sum = 0
+        sum += num * num for num in vec
+        return Math.sqrt sum
+      magA = magnitude vecA
+      magB = magnitude vecB
+      return product / (magA * magB)
+    updateUserSimilarities = (user, opponent, similarity) ->
+      similarities = user.profile.similarities ? {}
+      similarities.keyword ?= []
+      similarities.keyword = similarities.keyword.filter (v) ->
+        return v.id != opponent.id
+      similarities.keyword.push {id: opponent.id, value: similarity}
+      sorting = _.map similarities.keyword, (e)-> [e.id, e.value]
+      sorting.sort (a,b)->b[1] - a[1]
+      sorted = _.map sorting, (e)->{id:e[0], value:e[1]}
+      console.log sorted
+      similarities.keyword = sorted
+      user.profile.similarities = similarities
+      return user
+    @getUsers (users)=>
+      iterateUser = (u, done) =>
+        if u.profile.keywords?
+          keywordSimilarity = cosineSimilarity @user.profile.keywords, u.profile.keywords
+          console.log " #{u.id}:#{keywordSimilarity}"
+          @user = updateUserSimilarities @user, u, keywordSimilarity
+          u = updateUserSimilarities u, @user, keywordSimilarity
+          @user.save (err) =>
+            u.save done()
+        else
+          done()
+      finishUser = (err) =>
+        @finishCallback()
+      async.eachSeries users, iterateUser, finishUser
 User.find().exec (err, users)->
   iterate = (user, done)->
     console.log user.id
