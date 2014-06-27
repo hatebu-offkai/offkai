@@ -21,6 +21,7 @@
     "express": "^4.4.3",
     "express-session": "^1.3.1",
     "jade": "*",
+    "mecab-async": "0.0.8",
     "mongoose": "^3.8.12",
     "mongoose-findorcreate": "^0.1.2",
     "morgan": "^1.1.1",

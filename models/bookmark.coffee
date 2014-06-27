@@ -9,6 +9,7 @@ bookmarkEntrySchema = new Schema
   bookmark_count: Number
   category: String
   title_words: [String]
+  title_feature_words: [String]
   hatena_keywords: [String]
   timestamp: Date
   created: Date

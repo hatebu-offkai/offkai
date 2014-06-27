@@ -36,8 +36,11 @@ block body
                   span #{counter.word}: #{counter.count}
                   br
             div.list-group-item
-              h4.list-group-item-heading タイトルの特徴語
-              p.list-group-item-text ...
+              h4.list-group-item-heading タイトルの頻出名詞
+              p.list-group-item-text
+                each counter in user.profile.titles
+                  span #{counter.word}: #{counter.count}
+                  br
             div.list-group-item
               h4.list-group-item-heading はてなキーワード
               p.list-group-item-text

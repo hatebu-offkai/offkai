@@ -32,7 +32,7 @@ class UserAnalyzer
         console.log err
         @finishCallback()
         return
-      async.applyEach [@countBookmarksCategory, @countBookmarksHatenaKeywords, @extractBookmarksFeatureWord], bookmarks, ->
+      async.applyEach [@countBookmarksCategory, @countBookmarksHatenaKeywords, @countBookmarksTitleWords], bookmarks, ->
         callback()
   analyzeUserSimilarity: (callback)->
     User.find({_id:{$ne:@user._id}}).exec (err, users) =>
@@ -72,22 +72,37 @@ class UserAnalyzer
       @user.save ->
         callback()
     async.eachSeries bookmarks, iterateBookmark, finishBookmark
+  countWordArray: (wordArray, counter)->
+    _.map wordArray, (word)->
+      if counter[word]?
+        counter[word]++
+      else
+        counter[word]=1
+  sortWordCounter: (counter)->
+    counted = _.map counter, (v,k)->[k,v]
+    counted.sort (a, b)->b[1] - a[1]
+    counted = counted.slice(0, 19)
+    counted = _.map counted, (e)->{word:e[0], count:e[1]}
+    return counted
   countBookmarksHatenaKeywords: (bookmarks, callback)=>
     counter = {}
-    iterateBookmark = (b, done) ->
-      if b.hatena_keywords?
-        for keyword in b.hatena_keywords
-          if counter[keyword]?
-            counter[keyword]++
-          else
-            counter[keyword]=1
-        done()
+    iterateBookmark = (b, done) =>
+      @countWordArray(b.hatena_keywords, counter)
+      done()
     finishBookmark = (err) =>
-      counted = _.map counter, (v,k)->[k,v]
-      counted.sort (a, b)->b[1] - a[1]
-      counted = counted.slice(0, 19)
-      counted = _.map counted, (e)->{word:e[0], count:e[1]}
+      counted = @sortWordCounter(counter)
       @user.profile.keywords = counted
+      @user.save =>
+        callback()
+    async.eachSeries bookmarks, iterateBookmark, finishBookmark
+  countBookmarksTitleWords: (bookmarks, callback)=>
+    counter = {}
+    iterateBookmark = (b, done) =>
+      @countWordArray(b.title_words, counter)
+      done()
+    finishBookmark = (err) =>
+      counted = @sortWordCounter(counter)
+      @user.profile.titles = counted
       @user.save =>
         callback()
     async.eachSeries bookmarks, iterateBookmark, finishBookmark
