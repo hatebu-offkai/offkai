@@ -18,30 +18,45 @@ class UserAnalyzer
       @analyzeUserSimilarity =>
         @finishCallback()
   analyzeUserBookmarks: (callback)->
-    UserBookmark.find({user:@user},"entry").exec (err, result) =>
+    UserBookmark.find({user:@user},{entry:true,tags:true}).exec (err, userBookmarks) =>
       if err?
         console.log err
         @finishCallback()
         return
-      # entry._idだけの配列
-      entries = _.map result, (r)->r.entry
-      BookmarkEntry.find(_id:{$in:entries}).exec (err, bookmarks)=>
-        if err?
-          console.log err
-          @finishCallback()
-          return
-        # bookmarksに対して実行したい処理全部
-        async.applyEach [@countBookmarksCategory, @countBookmarksHatenaKeywords], bookmarks, ->
-          callback()
+      async.applyEach [@countBookmarksTags, @analyzeBookmarkEntries], userBookmarks, ->
+        callback()
+  analyzeBookmarkEntries: (userBookmarks, callback)=>
+    # userBookmarks から entry._id だけの配列を作って find する
+    entries = _.map userBookmarks, (r)->r.entry
+    BookmarkEntry.find(_id:{$in:entries}).exec (err, bookmarks)=>
+      if err?
+        console.log err
+        @finishCallback()
+        return
+      async.applyEach [@countBookmarksCategory, @countBookmarksHatenaKeywords], bookmarks, ->
+        callback()
   analyzeUserSimilarity: (callback)->
     User.find({_id:{$ne:@user._id}}).exec (err, users) =>
       if err?
         console.log err
         @finishCallback()
         return
-      # usersに対して実行したい処理全部
       async.applyEach [@calculateKeywordSimilarity], users, ->
         callback()
+  countBookmarksTags: (userBookmarks, callback)=>
+    tags = _.flatten _.map userBookmarks, (r)->r.tags
+    tagCounter = {}
+    _.map tags, (t)->
+      if tagCounter[t]?
+        tagCounter[t]++
+      else
+        tagCounter[t]=1
+    counting = _.map tagCounter, (v,k)->[k,v]
+    counting = counting.sort (a, b)->b[1] - a[1]
+    counted = _.map counting, (e)->{tag:e[0], count:e[1]}
+    @user.profile.tags = counted
+    @user.save ->
+      callback()
   countBookmarksCategory: (bookmarks, callback)=>
     counter = {}
     iterateBookmark = (b, done)->
@@ -108,7 +123,7 @@ class UserAnalyzer
     iterateUser = (u, done) =>
       if u.profile.keywords?
         keywordSimilarity = cosineSimilarity @user.profile.keywords, u.profile.keywords
-        console.log " #{u.id}:#{keywordSimilarity}"
+        #console.log " #{u.id}:#{keywordSimilarity}"
         @user = updateUserSimilarities @user, u, keywordSimilarity
         u = updateUserSimilarities u, @user, keywordSimilarity
         @user.save (err) =>
@@ -125,7 +140,7 @@ class UserAnalyzer
       @user.save =>
         callback()
     async.eachSeries users, iterateUser, finishUser
-User.find({id:"yuiseki"}).exec (err, users)->
+User.find().exec (err, users)->
   iterate = (user, done)->
     console.log user.id
     client = new UserAnalyzer user
