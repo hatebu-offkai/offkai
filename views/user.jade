@@ -48,9 +48,22 @@ block body
                   span #{counter.word}: #{counter.count}
                   br
               hr
-              h5.list-group-item-heading はてなキーワードが似ているユーザー
+              h4.list-group-item-heading 似ているユーザー
+              h5.list-group-item-heading カテゴリー
+              ol
+                - keyword_recommend_users = user.profile.similarities.category.slice(0,3)
+                each guser in keyword_recommend_users
+                  li
+                    a(href="/user/#{guser.id}")= guser.id
+              h5.list-group-item-heading はてなキーワード
               ol
                 - keyword_recommend_users = user.profile.similarities.keyword.slice(0,3)
+                each guser in keyword_recommend_users
+                  li
+                    a(href="/user/#{guser.id}")= guser.id
+              h5.list-group-item-heading タイトルの頻出名詞
+              ol
+                - keyword_recommend_users = user.profile.similarities.title.slice(0,3)
                 each guser in keyword_recommend_users
                   li
                     a(href="/user/#{guser.id}")= guser.id

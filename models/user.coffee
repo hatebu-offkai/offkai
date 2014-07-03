@@ -23,7 +23,10 @@ userSchema = new Schema
     titles: [Schema.Types.Mixed]
     tags: [Schema.Types.Mixed]
     similarities:
+      category: [Schema.Types.Mixed]
       keyword: [Schema.Types.Mixed]
+      title: [Schema.Types.Mixed]
+      tag: [Schema.Types.Mixed]
   created: Date
   updated: Date
 userSchema.plugin findOrCreate

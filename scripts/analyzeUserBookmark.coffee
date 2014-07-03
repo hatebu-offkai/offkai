@@ -52,7 +52,7 @@ class UserAnalyzer
         tagCounter[t]=1
     counting = _.map tagCounter, (v,k)->[k,v]
     counting = counting.sort (a, b)->b[1] - a[1]
-    counted = _.map counting, (e)->{tag:e[0], count:e[1]}
+    counted = _.map counting, (e)->{word:e[0], count:e[1]}
     @user.profile.tags = counted
     @user.save ->
       callback()
@@ -125,32 +125,38 @@ class UserAnalyzer
         return Math.sqrt sum
       magA = magnitude vecA
       magB = magnitude vecB
-      return product / (magA * magB)
-    updateUserSimilarities = (user, opponent, similarity) ->
+      result = product / (magA * magB)
+      result = 0 if isNaN result
+      return result
+    updateUserSimilarities = (user, opponent, similarity, type) ->
       similarities = user.profile.similarities ? {}
-      similarities.keyword ?= []
-      similarities.keyword = similarities.keyword.filter (v) ->
+      similarities[type] ?= []
+      similarities[type] = similarities[type].filter (v) ->
         return v.id != opponent.id
-      similarities.keyword.push {id: opponent.id, value: similarity}
+      similarities[type].push {id: opponent.id, value: similarity}
       user.profile.similarities = similarities
       return user
     iterateUser = (u, done) =>
       if u.profile.keywords?
+        categorySimilarity = cosineSimilarity @user.profile.categories, u.profile.categories
         keywordSimilarity = cosineSimilarity @user.profile.keywords, u.profile.keywords
-        #console.log " #{u.id}:#{keywordSimilarity}"
-        @user = updateUserSimilarities @user, u, keywordSimilarity
-        u = updateUserSimilarities u, @user, keywordSimilarity
+        titleSimilarity = cosineSimilarity @user.profile.titles, u.profile.titles
+        tagSimilarity = cosineSimilarity @user.profile.tags, u.profile.tags
+        for set in [['category', categorySimilarity], ['keyword', keywordSimilarity], ['title', titleSimilarity], ['tag', tagSimilarity]]
+          @user = updateUserSimilarities @user, u, set[1], set[0]
+          u = updateUserSimilarities u, @user, set[1], set[0]
         @user.save (err) =>
           u.save done()
       else
         done()
     finishUser = (err) =>
-      keyword = @user.profile.similarities.keyword
-      sorting = _.map keyword, (e)-> [e.id, e.value]
-      sorting.sort (a,b)->b[1] - a[1]
-      sorted = _.map sorting, (e)->{id:e[0], value:e[1]}
-      console.log sorted
-      @user.profile.similarities.keyword = sorted
+      for type in ['category', 'keyword', 'title', 'tag']
+        similarity = @user.profile.similarities[type]
+        sorting = _.map similarity, (e)-> [e.id, e.value]
+        sorting.sort (a,b)->b[1] - a[1]
+        sorted = _.map sorting, (e)->{id:e[0], value:e[1]}
+        console.log sorted
+        @user.profile.similarities[type] = sorted
       @user.save =>
         callback()
     async.eachSeries users, iterateUser, finishUser
