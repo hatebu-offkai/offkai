@@ -10,16 +10,16 @@
 # Setup
 
 ```sh
-git clone .../offkai/
+sudo aptitude install build-essential mongodb
+nave.sh use 0.10
+npm install coffee-script -g
+git clone https://github.com/hatebu-offkai/offkai.git
 cd offkai
 npm install
 ```
 
 
 # Config
-
-1. http://developer.hatena.ne.jp/ja/documents/auth/apis/oauth/consumer へアクセスして、説明文を読む。
-2. http://www.hatena.ne.jp/oauth/develop へアクセスして、適当な名前でアプリを追加して、ConsumerKeyを得る。
 
 ```sh
 cp config/sample.yaml config/default.yaml
