@@ -3,7 +3,7 @@ mixin user-tr(user)
   include userHelper
   tr
     td
-      a(href="/user/#{user.id}")
+      a(href="/user/#{user.id}", target="_blank")
         img.icon(src=icon_s)
         span.user-id= user.id
     td= user.profile.bookmark_count

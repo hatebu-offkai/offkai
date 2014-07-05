@@ -24,6 +24,8 @@ userSchema = new Schema
     tags: [Schema.Types.Mixed]
     similarities:
       keyword: [Schema.Types.Mixed]
+      title: [Schema.Types.Mixed]
+      tag: [Schema.Types.Mixed]
   created: Date
   updated: Date
 userSchema.plugin findOrCreate

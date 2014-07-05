@@ -10,7 +10,7 @@ block body
             img.icon(src=icon_n)
           div.col-xs-9.col-sm-11.name
             div.user-id= user.id
-            a(href="http://b.hatena.ne.jp/#{user.id}/follow.follow", target="_blank").btn.btn-default.btn-xs お気に入りに追加
+            a(href="http://b.hatena.ne.jp/#{user.id}/follow.follow").btn.btn-default.btn-xs お気に入りに追加
     div.row.hatebu-profile
       div.col-sm-3
         div.panel.panel-primary.bookmark-status
@@ -24,39 +24,6 @@ block body
                   td.attr-name= attr.title
                   td.attr-value
                     strong= user.profile[attr.name]
-      div.col-sm-4
-        div.panel.panel-primary.bookmark-words
-          div.panel-heading
-            h3.panel-title 最近のブクマ傾向
-          div.list-group
-            div.list-group-item
-              h4.list-group-item-heading カテゴリー
-              p.list-group-item-text
-                each counter in user.profile.categories
-                  span #{counter.word}: #{counter.count}
-                  br
-            div.list-group-item
-              h4.list-group-item-heading タイトルの頻出名詞
-              p.list-group-item-text
-                each counter in user.profile.titles
-                  span #{counter.word}: #{counter.count}
-                  br
-            div.list-group-item
-              h4.list-group-item-heading はてなキーワード
-              p.list-group-item-text
-                each counter in user.profile.keywords
-                  span #{counter.word}: #{counter.count}
-                  br
-              hr
-              h5.list-group-item-heading はてなキーワードが似ているユーザー
-              ol
-                - keyword_recommend_users = user.profile.similarities.keyword.slice(0,3)
-                each guser in keyword_recommend_users
-                  li
-                    a(href="/user/#{guser.id}")= guser.id
-            div.list-group-item
-              h4.list-group-item-heading よく使うタグ
-              p.list-group-item-text ...
       div.col-sm-5
         div.panel.panel-info.first-bookmark
           div.panel-heading
@@ -67,4 +34,46 @@ block body
               a(href=first_bookmark.entry_link)
                 span.title= first_bookmark.entry_title
               p.comment= first_bookmark.comment
-    h1.row.hatebu-friends
+    div.row.hatebu-profile
+      div.col-sm-3
+        div.panel.panel-primary.bookmark-words
+          div.panel-heading
+            h3.panel-title カテゴリー分析
+          div.list-group
+            div.list-group-item
+              p.list-group-item-text
+                each counter in user.profile.categories
+                  span #{counter.word}: #{counter.count}
+                  br
+      div.col-sm-3
+        div.panel.panel-primary.bookmark-words
+          div.panel-heading
+            h3.panel-title ブクマ記事タイトル分析
+          div.list-group-item
+            p.list-group-item-text
+              each counter in user.profile.titles
+                span #{counter.word}: #{counter.count}
+                br
+            hr
+            h5.list-group-item-heading ブクマ記事タイトルが似ているユーザー
+            ol
+              - keyword_recommend_users = user.profile.similarities.keyword.slice(0,3)
+              each guser in keyword_recommend_users
+                li
+                  a(href="/user/#{guser.id}")= guser.id
+      div.col-sm-3
+        div.panel.panel-primary.bookmark-words
+          div.panel-heading
+            h3.panel-title はてなキーワード分析
+          div.list-group-item
+            p.list-group-item-text
+              each counter in user.profile.keywords
+                span #{counter.word}: #{counter.count}
+                br
+            hr
+            h5.list-group-item-heading はてなキーワードが似ているユーザー
+            ol
+              - keyword_recommend_users = user.profile.similarities.keyword.slice(0,3)
+              each guser in keyword_recommend_users
+                li
+                  a(href="/user/#{guser.id}")= guser.id
