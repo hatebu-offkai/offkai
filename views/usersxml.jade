@@ -1,0 +1,14 @@
+doctype xml
+root
+  each user, i in users
+    include userHelper
+    - star = user.profile.stared_count_detail
+    namecard
+      user_id= user.id
+      bookmark_count= user.profile.bookmark_count
+      favorited_count= user.profile.favorited_count
+      blue_star_count= star.blue
+      red_star_count= star.red
+      green_star_count= star.green
+      yellow_star_count= star.yellow
+      icon(href=icon_n)
