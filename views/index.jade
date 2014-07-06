@@ -1,9 +1,9 @@
 extends ./layout/base.jade
 block body
   h1 Hatebu.me
-  div.wrapper
-    div.kurenai#kurenai-cover
+  div.kurenai#kurenai-cover
     iframe(frameorder="2", allowfullscreen=true).kurenai#kurenai
+  div.wrapper
     div.unit#unit-slot
       div#slot-container
         div#slot-left
@@ -14,6 +14,10 @@ block body
         div#slot-stop-right
         img#slot-restart(src="/static/img/slot-restart.png")
 
+block append style
+  style(type="text/css")
+    include css/base.css
+    include css/youtube.css
 block append scripts
   script(type="text/javascript")
     include scripts/youtube.js
