@@ -48,32 +48,54 @@ block body
       div.col-sm-3
         div.panel.panel-primary.bookmark-words
           div.panel-heading
-            h3.panel-title ブクマ記事タイトル分析
-          div.list-group-item
-            p.list-group-item-text
-              each counter in user.profile.titles
-                span #{counter.word}: #{counter.count}
-                br
-            hr
-            h5.list-group-item-heading ブクマ記事タイトルが似ているユーザー
-            ol
-              - keyword_recommend_users = user.profile.similarities.keyword.slice(0,3)
-              each guser in keyword_recommend_users
-                li
-                  a(href="/user/#{guser.id}")= guser.id
+            h3.panel-title タイトルの頻出名詞分析
+          div.list-group
+            div.list-group-item
+              p.list-group-item-text
+                each counter in user.profile.titles
+                  span #{counter.word}: #{counter.count}
+                  br
       div.col-sm-3
         div.panel.panel-primary.bookmark-words
           div.panel-heading
             h3.panel-title はてなキーワード分析
-          div.list-group-item
-            p.list-group-item-text
-              each counter in user.profile.keywords
-                span #{counter.word}: #{counter.count}
-                br
-            hr
-            h5.list-group-item-heading はてなキーワードが似ているユーザー
-            ol
-              - keyword_recommend_users = user.profile.similarities.keyword.slice(0,3)
-              each guser in keyword_recommend_users
-                li
-                  a(href="/user/#{guser.id}")= guser.id
+          div.list-group
+            div.list-group-item
+              p.list-group-item-text
+                each counter in user.profile.keywords
+                  span #{counter.word}: #{counter.count}
+                  br
+      div.col-sm-3
+        div.panel.panel-primary.bookmark-words
+          div.panel-heading
+            h3.panel-title タグ
+          div.list-group
+            div.list-group-item
+              p.list-group-item-text
+                each counter in user.profile.tags
+                  span #{counter.tag}: #{counter.count}
+                  br
+      div.col-sm-3
+        div.panel.panel-primary.bookmark-words
+          div.panel-heading
+            h3.panel-title タグ
+          div.list-group
+              h4.list-group-item-heading 似ているユーザー
+              h5.list-group-item-heading カテゴリー
+              ol
+                - keyword_recommend_users = user.profile.similarities.category.slice(0,3)
+                each guser in keyword_recommend_users
+                  li
+                    a(href="/user/#{guser.id}")= guser.id
+              h5.list-group-item-heading はてなキーワード
+              ol
+                - keyword_recommend_users = user.profile.similarities.keyword.slice(0,3)
+                each guser in keyword_recommend_users
+                  li
+                    a(href="/user/#{guser.id}")= guser.id
+              h5.list-group-item-heading タイトルの頻出名詞
+              ol
+                - keyword_recommend_users = user.profile.similarities.title.slice(0,3)
+                each guser in keyword_recommend_users
+                  li
+                    a(href="/user/#{guser.id}")= guser.id
