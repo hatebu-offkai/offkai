@@ -74,6 +74,10 @@ app.get "/users", (req, res) ->
   alluser (users)->
     res.render "users", {pretty:true, users:users}
 
+app.get "/users.xml", (req, res) ->
+  alluser (users)->
+    res.render "usersxml", {pretty:true, users:users}
+
 app.get "/users.json", (req, res) ->
   alluser (users)->
     res.send {users:users}

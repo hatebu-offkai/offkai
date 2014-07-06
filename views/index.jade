@@ -1,8 +1,15 @@
 extends ./layout/base.jade
 block body
-  h1 Hatebu.me
   div.kurenai#kurenai-cover
-    iframe(frameorder="2", allowfullscreen=true).kurenai#kurenai
+  iframe(frameorder="2", allowfullscreen=true).kurenai#kurenai
+  h1 Hatebu.me
+  div.images
+    img(src="/static/img/gaiyou.jpg")
+    img(src="/static/img/tatakare.jpg")
+    br
+    img(src="/static/img/mohican.jpg", width=200, height=200)
+    img(src="/static/img/disinfection.jpg", width=200, height=200)
+
   div.wrapper
     div.unit#unit-slot
       div#slot-container
