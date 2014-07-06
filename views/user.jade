@@ -73,7 +73,9 @@ block body
             div.list-group-item
               p.list-group-item-text
                 each counter in user.profile.tags
-                  span #{counter.tag}: #{counter.count}
+                  span 
+                    a(href="http://b.hatena.ne.jp/#{user.id}/#{counter.word}/", target="_blank") #{counter.word}
+                    span : #{counter.count}
                   br
       div.col-sm-3
         div.panel.panel-primary.bookmark-words
