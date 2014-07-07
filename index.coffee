@@ -56,7 +56,6 @@ app.get "/auth/hatena/callback",
     successRedirect: "/home"
 
 app.get "/", (req, res) ->
-  #res.render "index", {pretty:true}
   res.sendfile "index.html", {root:"./static"}
 
 alluser = (callback)->
