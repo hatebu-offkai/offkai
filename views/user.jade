@@ -45,6 +45,14 @@ block body
                 each counter in user.profile.categories
                   span #{counter.word}: #{counter.count}
                   br
+              hr
+              p.list-group-item-text
+                h5 似ているユーザー
+                ol
+                  - keyword_recommend_users = user.profile.similarities.category.slice(0,5)
+                  each guser in keyword_recommend_users
+                    li
+                      a(href="/user/#{guser.id}")= guser.id
       div.col-sm-3
         div.panel.panel-primary.bookmark-words
           div.panel-heading
@@ -55,6 +63,14 @@ block body
                 each counter in user.profile.titles
                   span #{counter.word}: #{counter.count}
                   br
+              hr
+              p.list-group-item-text
+                h5 似ているユーザー
+                ol
+                  - keyword_recommend_users = user.profile.similarities.title.slice(0,5)
+                  each guser in keyword_recommend_users
+                    li
+                      a(href="/user/#{guser.id}")= guser.id
       div.col-sm-3
         div.panel.panel-primary.bookmark-words
           div.panel-heading
@@ -65,10 +81,18 @@ block body
                 each counter in user.profile.keywords
                   span #{counter.word}: #{counter.count}
                   br
+              hr
+              p.list-group-item-text
+                h5 似ているユーザー
+                ol
+                  - keyword_recommend_users = user.profile.similarities.keyword.slice(0,5)
+                  each guser in keyword_recommend_users
+                    li
+                      a(href="/user/#{guser.id}")= guser.id
       div.col-sm-3
         div.panel.panel-primary.bookmark-words
           div.panel-heading
-            h3.panel-title タグ
+            h3.panel-title タグ使用頻度ランキング
           div.list-group
             div.list-group-item
               p.list-group-item-text
@@ -77,6 +101,7 @@ block body
                     a(href="http://b.hatena.ne.jp/#{user.id}/#{counter.word}/", target="_blank") #{counter.word}
                     span : #{counter.count}
                   br
+//-
       div.col-sm-3
         div.panel.panel-primary.bookmark-words
           div.panel-heading
