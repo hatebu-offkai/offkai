@@ -53,6 +53,7 @@ class UserAnalyzer
     counting = _.map tagCounter, (v,k)->[k,v]
     counting = counting.sort (a, b)->b[1] - a[1]
     counted = _.map counting, (e)->{word:e[0], count:e[1]}
+    #console.log counted
     @user.profile.tags = counted
     @user.save ->
       callback()
@@ -155,7 +156,7 @@ class UserAnalyzer
         sorting = _.map similarity, (e)-> [e.id, e.value]
         sorting.sort (a,b)->b[1] - a[1]
         sorted = _.map sorting, (e)->{id:e[0], value:e[1]}
-        console.log sorted
+        #console.log sorted
         @user.profile.similarities[type] = sorted
       @user.save =>
         callback()
