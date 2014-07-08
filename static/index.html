@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="//cdn.www.st-hatena.com/css/hatena/header.css" type="text/css" media="all">
   <style type="text/css">
     * {
-        cursor: url(http://ieirikazuma.com/ieiri-tiny.png), default;
+        cursor: url(/static/img/profile_s.gif), default;
     }
     .kurenai {
       width: 80px;
@@ -25,14 +25,14 @@
       z-index: 1000;
     }
     div.iframe-wrapper {
-      width: 466px;
-      height: 500px;
+      width: 500px;
+      height: 700px;
       padding: 0px:
       overflow:hidden;
     }
     iframe.entry-body-iframe {
-      width:400px !important;
-      height:500px !important;
+      width:100% !important;
+      height:100% !important;
       max-width:none !important;
       max-height:none !important;
       /*
@@ -51,15 +51,19 @@
   <div id="global-header-container">
     <div id="header">
       <div id="header-body">
-        <div id="siteid"><a href="/" data-track-name="global-header-logo-space-click" data-track-once=""><img src="/images/space_pc_logo@2x.png?3978c6c8" alt="Hatena Space"></a></div>
+        <div id="siteid"><a href="/" data-track-name="global-header-logo-space-click" data-track-once="">
+            <img src="/static/img/hatebuoff_png.png" alt="Hatena Space"></a></div>
         <ul class="service-menu">
           <li class="space-menu">
-            <a href="/yuiseki/" data-track-name="global-header-my-page-click" data-track-once=""><img src="http://cdn1.www.st-hatena.com/users/yu/yuiseki/profile.gif" alt="yuiseki" class="profile-image">プロフィール</a>
+          <a href="/user/netcraft" data-track-name="global-header-my-page-click" data-track-once="">
+            <img src="http://cdn7.www.st-hatena.com/users/ne/netcraft/profile_s.gif?1387856453" alt="netcraft" class="profile-image">プロフィール</a>
           </li>
-          <li class="space-menu"><a href="/~" data-track-name="global-header-create-space-click" data-track-once="">スペースをつくる</a></li>
+          <li class="space-menu">
+            <a href="#" data-track-name="global-header-create-space-click" data-track-once="">スペースをこわす</a>
+          </li>
           <li class="space-menu"><a href="/-/feedback" data-track-name="global-header-feedback-click" data-track-once="">フィードバック</a></li>
           <li class="space-menu"><a href="/-/help" data-track-name="global-header-help-click" data-track-once="">ヘルプ</a></li>
-          <li class="header-username" id="header-username" data-name="yuiseki" data-track-name="global-header-icon-service-click" data-track-once="" data-track-selector="img">
+          <li class="header-username" id="header-username" data-name="hoge" data-track-name="global-header-icon-service-click" data-track-once="" data-track-selector="img">
             <span class="header-dropdown" tabindex="0">
               <img src="http://cdn.www.st-hatena.com/images/header/usermenu-wh.png" alt="利用中のサービス">
             </span>
@@ -172,6 +176,11 @@
         <li class="link-list-invite"><a href="/~/14290830716932572337/invite" rel="nofollow">招待する</a></li>
         <li class="link-list-setting"><a href="/~/14290830716932572337/manage">スペースの設定</a></li>
       </ul>
+    </div>
+    <div style="margin-top:30px;">
+      <a href="http://atnd.org/events/52857">
+        <img src="/static/img/tatakare.jpg" width="190" height="190">
+      </a>
     </div>
     <div class="copyright">©Hatena</div>
   </div>
@@ -318,11 +327,35 @@
   <div class="iframe-wrapper">
     <iframe class="entry-body-iframe"
       frameborder="0" marginwidth="0" marginheight="0" topmargin="0" leftmargin="0"
-      id="atnd" src="http://atnd.org/events/52857"></iframe>
+      id="atnd" src="http://anond.hatelabo.jp/20140701001650"></iframe>
     </iframe>
   </div>
 <!-- /entry -->
 </div>
+
+
+
+<!-- entry (iframe, no replay action) -->
+<div class="entry " data-entry-number="1" data-topic-id="" data-track-name="topic-entry-click" data-track-selector="a" data-track-once="">
+  <div class="meta">
+    <a href="/user/netcraft" class="author-image-link">
+      <img src="http://cdn7.www.st-hatena.com/users/ne/netcraft/profile.gif?1387856453" alt="">
+    </a>
+    <div class="author">
+      <a href="/user/netcraft">
+        齊藤貴義 <span class="username">id:netcraft</span>
+      </a>
+    </div>
+  </div>
+  <div class="iframe-wrapper">
+    <iframe class="entry-body-iframe"
+      frameborder="0" marginwidth="0" marginheight="0" topmargin="0" leftmargin="0"
+      id="atnd" src="http://anond.hatelabo.jp/20140701112311"></iframe>
+    </iframe>
+  </div>
+<!-- /entry -->
+</div>
+
 
 
         </div>

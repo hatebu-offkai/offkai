@@ -1,8 +1,8 @@
 
 function mouseCustom() {
-    var src = "http://ieirikazuma.com/ieiri-tiny.png"
+    var src = "/static/img/profile_s.gif"
     var ganmen = $("<div class='ganmen'><img src='"+src+"'></div>")
-    $(ganmen).css({width:'100px', height:'100px', overflow:'hidden', position:'absolute', top:'0', left:'0'});
+    $(ganmen).css({overflow:'hidden', position:'absolute', top:'0', left:'0'});
     $('body').append(ganmen);
     $('html').mousemove(function(e){
         var icon = $(ganmen).offset();
