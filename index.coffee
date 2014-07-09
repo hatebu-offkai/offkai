@@ -59,7 +59,7 @@ app.get "/", (req, res) ->
   res.sendfile "index.html", {root:"./static"}
 
 alluser = (callback)->
-  User.find {}, {}, {sort:{id:1}}, (err, users) ->
+  User.find {attend_status:true}, {}, {sort:{id:1}}, (err, users) ->
     if err?
       console.log err
       res.send 500, "Error"

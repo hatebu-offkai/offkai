@@ -4,6 +4,7 @@ var youtubeVideoList = [
     "Th-Z6le3bHA", // ソヴィエト
     "Th-Z6le3bHA", // ソヴィエト
     "Th-Z6le3bHA", // ソヴィエト
+    "Th-Z6le3bHA", // ソヴィエト
     "j1UflQ0WeR0", // 紅
     "LSbnECOt5WA", // シンガポールナイトサファリ (ショー)
     "kfLbhmQkzOY" // シンガポールナイトサファリ (ツアー)

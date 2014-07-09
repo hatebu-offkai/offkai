@@ -4,8 +4,10 @@ helper = require "./modelHelper"
 Schema = mongoose.Schema
 userSchema = new Schema
   id: String
+  name: String
   attend_comment: String
   attend_status: Boolean
+  attend_afterparty: Boolean
   bookmarks: [{type:Schema.Types.ObjectId, ref: 'UserBookmark'}]
   profile:
     bookmark_count: Number

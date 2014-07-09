@@ -19,7 +19,11 @@ class UserPageScraper
       bookmarks_per_page: null
   run: (done) ->
     @finishCallback = done
-    @getUserBookmarkInfo()
+    if @user.id == ""
+      console.log "Please input valid user id", @user.name
+      @finishCallback()
+    else
+      @getUserBookmarkInfo()
   getUserBookmarkInfo: ->
     console.log "request", @bookmarkURL
     request @bookmarkURL
@@ -27,12 +31,11 @@ class UserPageScraper
         if !err && resp.statusCode == 200
           $ = cheerio.load body
           @parseUserBookmarkInfo $
-          @getFirstBookmark()
         else
-          console.log "request failed", resq.statusCode, err
+          console.log "request failed", @user.id, resp.statusCode, err
           @finishCallback()
   parseUserBookmarkInfo: ($) ->
-    console.log "parseUserBookmarkInfo"
+    console.log "parseUserBookmarkInfo", @user.id
     user = @user
     user.profile.misc.new_page = $("#hatena-bookmark-user-page").length
     if user.profile.misc.new_page
@@ -69,18 +72,25 @@ class UserPageScraper
       first_bookmark_offset = (Math.floor(Number(user.profile.bookmark_count) / bookmarks_per_page) * bookmarks_per_page)
       user.profile.misc.first_bookmark_offset = first_bookmark_offset
     user.profile.misc.bookmarks_per_page = bookmarks_per_page
+    user.save =>
+      @getFirstBookmark()
   getFirstBookmark: ()->
-    firstBookmarkUrl = @bookmarkURL + "?of=#{@user.profile.misc.first_bookmark_offset}"
-    console.log "request", firstBookmarkUrl
-    request firstBookmarkUrl
-      , (err, resp, body)=>
-        if !err && resp.statusCode == 200
-          $ = cheerio.load body
-          @parseFirstBookmark $
-        else
-          console.log "first bookmark failed", err
-          console.log resp.statusCode
-          @finishCallback()
+    if @user.profile.first_bookmark.title?
+      console.log "first_bookmark already exists, finish", @user.id
+      console.log @user.profile.first_bookmark.title
+      @finishCallback()
+    else
+      firstBookmarkUrl = @bookmarkURL + "?of=#{@user.profile.misc.first_bookmark_offset}"
+      console.log "request", firstBookmarkUrl
+      request firstBookmarkUrl
+        , (err, resp, body)=>
+          if !err && resp.statusCode == 200
+            $ = cheerio.load body
+            @parseFirstBookmark $
+          else
+            console.log "first bookmark failed", err
+            console.log resp.statusCode
+            @finishCallback()
   parseFirstBookmark: ($) ->
     console.log "parseFirstBookmark"
     user = @user
@@ -95,12 +105,13 @@ class UserPageScraper
     user.profile.first_bookmark.entry_link = entry_link.attribs.href
     user.profile.first_bookmark.comment = $("li[data-eid]:last-child li[data-user=\"#{user.id}\"] .comment").text()
     user.profile.first_bookmark.timestamp = Date.parse $("li[data-eid]:last-child li[data-user=\"#{user.id}\"] .timestamp")[0].children[0].data
-    console.log user.profile
-    user.save(@finishCallback)
+    console.log "finish", @user.id
+    user.save =>
+      @finishCallback()
 
-#user_ids = ["netcraft", "Lhankor_Mhy", "kamayan1980", "nisemono_san", "TERRAZI", "atq", "sabacurry", "nkoz", "hnnhn2", "kiku-chan", "Rlee1984", "yuiseki", "AnonymousLifeforms", "hyaknihyak", "dora-kou", "whkr", "kybernetes", "hinaho", "shields-pikes",  "pero_pero", "K_SHIKI", "yo-mei777", "rgfx", "new3", "kazoo_oo", "seagullwhite", "bulldra", "tomad"]
-User.find {id:"yuiseki"}, (err, users)->
+User.find {attend_status:true}, (err, users)->
   iterate = (user, done) ->
+    console.log "----"
     console.log user.id
     client = new UserPageScraper user
     client.run(done)

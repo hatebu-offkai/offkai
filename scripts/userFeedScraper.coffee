@@ -43,14 +43,14 @@ class UserFeedScraper
               timestamp: Date.parse(entry.issued[0])
             BookmarkEntry.findOrCreate {url:data.url, title:data.title}, (err, entry, created) =>
               @saveUserBookmarkModel entry, data, done
-              if !created
-                @finishCallback()
           if result.feed.entry?
             async.eachSeries result.feed.entry, saveOneEntry, fetchNextBookmarks
           else
             @finishCallback()
   saveUserBookmarkModel: (entry, data, next) ->
-    UserBookmark.findOrCreate {id:data.id}, (err, userBookmark) =>
+    UserBookmark.findOrCreate {id:data.id}, (err, userBookmark, created) =>
+      if !created
+        @finishCallback()
       userBookmark.user = @user
       userBookmark.entry = entry
       userBookmark.comment = data.comment
@@ -58,7 +58,7 @@ class UserFeedScraper
       userBookmark.timestamp = data.timestamp
       userBookmark.save(next)
 
-User.find {}, (err, users)->
+User.find {attend_status:true}, (err, users)->
   iterate = (user, done) ->
     scraper = new UserFeedScraper user
     scraper.run(done)

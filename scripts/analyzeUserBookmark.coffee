@@ -35,7 +35,7 @@ class UserAnalyzer
       async.applyEach [@countBookmarksCategory, @countBookmarksHatenaKeywords, @countBookmarksTitleWords], bookmarks, ->
         callback()
   analyzeUserSimilarity: (callback)->
-    User.find({_id:{$ne:@user._id}}).exec (err, users) =>
+    User.find({_id:{$ne:@user._id}, attend_status:true}).exec (err, users) =>
       if err?
         console.log err
         @finishCallback()
@@ -161,7 +161,7 @@ class UserAnalyzer
       @user.save =>
         callback()
     async.eachSeries users, iterateUser, finishUser
-User.find().exec (err, users)->
+User.find({attend_status:true}).exec (err, users)->
   iterate = (user, done)->
     console.log user.id
     client = new UserAnalyzer user
