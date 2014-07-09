@@ -27,26 +27,31 @@ class UserFeedScraper
       return
     feedUrl = @feedURL + "?of=#{@user.profile.misc.feed_offset}"
     console.log "request", feedUrl
-    request feedUrl
-      , (err, resp, body) =>
-        xml2js.parseString body, (err, result) =>
-          fetchNextBookmarks = =>
-            @user.profile.misc.feed_offset += @offsetUnit
-            @getRecentBookmarks()
-          saveOneEntry = (entry, done) =>
-            data =
-              id: entry.id[0]
-              url: entry.link[0]["$"].href
-              title: entry.title[0]
-              tags: entry["dc:subject"]
-              comment: entry.summary[0]
-              timestamp: Date.parse(entry.issued[0])
-            BookmarkEntry.findOrCreate {url:data.url, title:data.title}, (err, entry, created) =>
-              @saveUserBookmarkModel entry, data, done
-          if result.feed.entry?
-            async.eachSeries result.feed.entry, saveOneEntry, fetchNextBookmarks
-          else
-            @finishCallback()
+    request feedUrl, (err, resp, body) =>
+      if !err && resp.statusCode == 200
+        @parseXml body
+      else
+        console.log "request failed", @user.id, err, resp.statusCode
+        @finishCallback()
+  parseXml: (xml) ->
+    xml2js.parseString xml, (err, result) =>
+      fetchNextBookmarks = =>
+        @user.profile.misc.feed_offset += @offsetUnit
+        @getRecentBookmarks()
+      saveOneEntry = (entry, done) =>
+        data =
+          id: entry.id[0]
+          url: entry.link[0]["$"].href
+          title: entry.title[0]
+          tags: entry["dc:subject"]
+          comment: entry.summary[0]
+          timestamp: Date.parse(entry.issued[0])
+        BookmarkEntry.findOrCreate {url:data.url, title:data.title}, (err, entry, created) =>
+          @saveUserBookmarkModel entry, data, done
+      if result.feed.entry?
+        async.eachSeries result.feed.entry, saveOneEntry, fetchNextBookmarks
+      else
+        @finishCallback()
   saveUserBookmarkModel: (entry, data, next) ->
     UserBookmark.findOrCreate {id:data.id}, (err, userBookmark, created) =>
       if !created

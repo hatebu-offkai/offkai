@@ -4,6 +4,12 @@ block append meta
   meta(name="viewport", content="width=device-width, initial-scale=1")
   link(rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css")
 
+block append style
+  style(type="text/css").
+    .navbar { min-height: 37px; height:37px; } 
+    .navbar .navbar-brand{ padding: 6px 10px;font-size: 16px;line-height: 18px; } 
+    .navbar .navbar-nav > li > a {  padding-top: 7px; padding-bottom: 7px; line-height: 20px; } 
+
 block scripts
   - cdnjs = "//cdnjs.cloudflare.com/ajax/libs/"
   - list = []

@@ -30,7 +30,7 @@ class UserStarClient
             console.log @user.profile.stared_count, @user.profile.stared_count_detail
             @finishCallback()
         else
-          console.log "request failed", resq.statusCode, err
+          console.log "request failed", @user.id, resp.statusCode, err
           @finishCallback()
 
 User.find {}, (err, users)->
