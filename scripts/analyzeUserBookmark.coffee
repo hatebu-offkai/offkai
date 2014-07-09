@@ -40,7 +40,7 @@ class UserAnalyzer
         console.log err
         @finishCallback()
         return
-      async.applyEach [@calculateKeywordSimilarity], users, ->
+      async.applyEach [@calculateSimilarities], users, ->
         callback()
   countBookmarksTags: (userBookmarks, callback)=>
     tags = _.flatten _.map userBookmarks, (r)->r.tags
@@ -107,7 +107,7 @@ class UserAnalyzer
       @user.save =>
         callback()
     async.eachSeries bookmarks, iterateBookmark, finishBookmark
-  calculateKeywordSimilarity: (users, callback)=>
+  calculateSimilarities: (users, callback)=>
     cosineSimilarity = (a, b) ->
       dict = {}
       dict[elem.word] = true for elem in a
@@ -135,6 +135,10 @@ class UserAnalyzer
       similarities[type] = similarities[type].filter (v) ->
         return v.id != opponent.id
       similarities[type].push {id: opponent.id, value: similarity}
+      sorting = _.map similarities[type], (e)-> [e.id, e.value]
+      sorting.sort (a,b)->b[1] - a[1]
+      sorted = _.map sorting, (e)->{id:e[0], value:e[1]}
+      similarities[type] = sorted
       user.profile.similarities = similarities
       return user
     iterateUser = (u, done) =>
@@ -146,18 +150,10 @@ class UserAnalyzer
         for set in [['category', categorySimilarity], ['keyword', keywordSimilarity], ['title', titleSimilarity], ['tag', tagSimilarity]]
           @user = updateUserSimilarities @user, u, set[1], set[0]
           u = updateUserSimilarities u, @user, set[1], set[0]
-        @user.save (err) =>
-          u.save done()
+        u.save done()
       else
         done()
     finishUser = (err) =>
-      for type in ['category', 'keyword', 'title', 'tag']
-        similarity = @user.profile.similarities[type]
-        sorting = _.map similarity, (e)-> [e.id, e.value]
-        sorting.sort (a,b)->b[1] - a[1]
-        sorted = _.map sorting, (e)->{id:e[0], value:e[1]}
-        #console.log sorted
-        @user.profile.similarities[type] = sorted
       @user.save =>
         callback()
     async.eachSeries users, iterateUser, finishUser
