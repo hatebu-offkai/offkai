@@ -4,11 +4,11 @@ function destroy() {
 
 	setInterval(function() {
 		$('img').animate({
-			'scale': '4.0',
+			'scale': '5.0',
 			'rotate': '+=360'
-		}, 5000).animate({
+		}, 300).animate({
 			'scale': '1.0',
 			'rotate': '+=360'
-		}, 500);
-	}, 7000);
+		}, 300);
+	}, 1000);
 }
