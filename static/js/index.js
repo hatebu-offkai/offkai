@@ -4,5 +4,9 @@ $(function(){
       mouseCustom
     );
     hatebuButtonShower();
+
+    $('.destroy').click(function() {
+    	destroy();
+    });
   }
 );
