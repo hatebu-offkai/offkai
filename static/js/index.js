@@ -3,10 +3,9 @@ $(function(){
     loadYoutube(
       mouseCustom
     );
-    hatebuButtonShower();
 
     $(window).scroll(function () {
-      startMatrix;
+      startMatrix();
       hatebuButtonShower();
     });
 
