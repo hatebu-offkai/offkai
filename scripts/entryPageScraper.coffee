@@ -28,7 +28,7 @@ class EntryPageScraper
         $ = cheerio.load body
         @parseBookmarkInfo $
       else
-        console.log "error", err, resp.statusCode
+        console.log "error", err
         @finishCallback()
   parseBookmarkInfo: ($) ->
     count = $("ul.entry-page-unit li.entry-unit ul.users li strong a span").text()

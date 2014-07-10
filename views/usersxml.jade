@@ -2,7 +2,11 @@ doctype xml
 root
   each user, i in users
     include userHelper
+    - if (user.profile.stared_count_detail){
     - star = user.profile.stared_count_detail
+    - }else{
+    - star = {blue:0, red:0, green:0, yellow:0}
+    - }
     namecard
       user_id= user.id
       bookmark_count= user.profile.bookmark_count
