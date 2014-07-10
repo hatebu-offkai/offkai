@@ -29,7 +29,7 @@ $(function(){
     $('html').mousemove(function () {
       if (mousemove_flag === 0) {
         mousemove_flag = 1;
-        setTimeout(startRainbow, 1500);
+        setTimeout(startRainbow, 2500);
       }
     });
 
