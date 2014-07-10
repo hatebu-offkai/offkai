@@ -7,7 +7,7 @@ function hatebuButtonShower() {
 
 function button_x_x() {
 	var x = Math.ceil(Math.random()*100);
-	if (Math.floor( Math.random()*1)) {
+	if (Math.floor( Math.random()*1) === 1) {
 		var $button = $('<img src="http://b.hatena.ne.jp/images/users/normal/09999.png" class="button_x_x" style="left:'+x+'%" />');
 	} else {
 		var $button = $('<img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" class="button_x_x" style="left:'+x+'%" />');
@@ -22,12 +22,11 @@ function button_x_x() {
 
 function button_x_y() {
 	var y = Math.ceil(Math.random()*100);
-	if (Math.floor(Math.random()*1)) {
+	if (Math.floor(Math.random()*1) === 1) {
 		var $button = $('<img src="http://b.hatena.ne.jp/images/users/normal/09999.png" class="button_x_y" style="left:'+y+'%" />');
 	} else {
 		var $button = $('<img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" class="button_x_y" style="left:'+y+'%" />');
 	}
-	var $button = $('<img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" class="button_x_y" style="left:'+y+'%" />');
 	$button.appendTo('body').animate({
 		'bottom': '120%'
 	}, 700, 'linear')
@@ -38,7 +37,7 @@ function button_x_y() {
 
 function button_y_x() {
 	var x = Math.ceil(Math.random()*100);
-	if (Math.floor(Math.random()*1)) {
+	if (Math.floor(Math.random()*1) === 1) {
 		var $button = $('<img src="http://b.hatena.ne.jp/images/users/normal/09999.png" class="button_y_x" style="top:'+x+'%" />');
 	} else {
 		var $button = $('<img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" class="button_y_x" style="top:'+x+'%" />');
@@ -53,7 +52,7 @@ function button_y_x() {
 
 function button_y_y() {
 	var x = Math.ceil(Math.random()*100);
-	if (Math.floor(Math.random()*1)) {
+	if (Math.floor(Math.random()*1) === 1) {
 		var $button = $('<img src="http://b.hatena.ne.jp/images/users/normal/09999.png" class="button_y_y" style="top:'+x+'%" />');
 	} else {
 		var $button = $('<img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" class="button_y_y" style="top:'+x+'%" />');
