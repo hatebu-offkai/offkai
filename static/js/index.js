@@ -6,7 +6,12 @@ $(function(){
     hatebuButtonShower();
 
     $('.destroy').click(function() {
-    	destroy();
+      destroy();
     });
+
+    var rainbowElementsCount = $('li').length;
+    for (var i=0; i<rainbowElementsCount; i++) {
+      $('li').eq(i).kabuki().rainbow();
+    }
   }
 );
