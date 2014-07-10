@@ -4,10 +4,13 @@ $(function(){
       mouseCustom
     );
 
-
-    $(window).one('scroll', (function() {
-      startMatrix();
-      hatebuButtonShower();
+    var scroll_flag = 0;
+    $(window).scroll(function () {
+      if (scroll_flag === 0) {
+        startMatrix();
+        hatebuButtonShower();
+        scroll_flag = 1;
+      }
     });
 
     $('.destroy').click(function() {
