@@ -3,5 +3,6 @@ $(function(){
     loadYoutube(
       mouseCustom
     );
+    hatebuButtonShower();
   }
 );
