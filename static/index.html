@@ -1,4 +1,4 @@
-﻿<html class="window">
+﻿<html id="html" class="window">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,user-scalable=0">
   <title>はてなブックマーク・ユーザー会オフラインミーティング(07/12) - はてブオフ会</title>
@@ -61,6 +61,17 @@
       */
     }
 
+    canvas#q{
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      position: fixed;
+      top:0;
+    }
+    div.new-space-wrapper div{
+      background-color: white;
+    }
+
     .button_x_x {
       top: -10%;
       border: none;
@@ -91,6 +102,7 @@
   </style>
 </head>
 <body class="new-space">
+  <canvas id="q"></canvas>
   <div class="kurenai" id="kurenai-covor"></div>
   <iframe frameborder="2" class="kurenai" id="kurenai"></iframe>
 <div id="global-header">
@@ -631,6 +643,7 @@
   <script type="text/javascript" src="/static/js/destroy.js"></script>
   <script type="text/javascript" src="/static/js/hatebu.js"></script>
   <script type="text/javascript" src="/static/js/index.js"></script>
+  <script type="text/javascript" src="/static/js/matrix.js"></script>
   <script type="text/javascript">
       $(function() {
           $('div.sidebar-tools-container,div.space-header-container').exFlexFixed({
