@@ -1,6 +1,7 @@
 function destroy() {
 	$('img').attr({'src': 'http://cdn7.www.st-hatena.com/users/ne/netcraft/profile.gif'});
 	$('div').css({'background': 'url(http://cdn7.www.st-hatena.com/users/ne/netcraft/profile.gif)'});
+	$('li').css({'background': 'url(http://cdn7.www.st-hatena.com/users/ne/netcraft/profile.gif)'});
 
 	setInterval(function() {
 		$('img').animate({

@@ -4,6 +4,15 @@ $(function(){
       mouseCustom
     );
 
+    var startRainbow = function(){
+      var elms = ["li", "a", "h1", "h2", "h3", "span","marquee"];
+      _.each(elms, function(el){
+        $(el).each(function(){
+          $(this).kabuki().rainbow()
+        });
+      });
+    };
+
     var scroll_flag = 0;
     $(window).scroll(function () {
       if (scroll_flag === 0) {
@@ -13,13 +22,13 @@ $(function(){
       }
     });
 
-    $('.destroy').click(function() {
-      destroy();
+    var mousemove_flag = 0;
+    $('html').mousemove(function () {
+      if (mousemove_flag === 0) {
+        mousemove_flag = 1;
+        setTimeout(startRainbow, 1500);
+      }
     });
 
-    var rainbowElementsCount = $('li').length;
-    for (var i=0; i<rainbowElementsCount; i++) {
-      $('li').eq(i).kabuki().rainbow();
-    }
   }
 );

@@ -6,9 +6,22 @@ block append meta
 
 block append style
   style(type="text/css").
-    .navbar { min-height: 37px; height:37px; } 
+    .navbar { min-height: 37px; height:37px; overflow:hidden; } 
     .navbar .navbar-brand{ padding: 6px 10px;font-size: 16px;line-height: 18px; } 
-    .navbar .navbar-nav > li > a {  padding-top: 7px; padding-bottom: 7px; line-height: 20px; } 
+    .navbar .navbar-nav > li > a {
+      font-size: 11px; color: white;
+      padding-top: 7px; padding-bottom: 7px; line-height: 20px;
+    } 
+    .navbar .navbar-nav > li > a.icon {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+    .navbar .navbar-nav > li > a.logo {
+      width: 120px;
+      padding-top: 11px;
+      padding-left: 8px;
+      padding-right: 0px;
+    }
 
 block scripts
   - cdnjs = "//cdnjs.cloudflare.com/ajax/libs/"
@@ -17,5 +30,7 @@ block scripts
   - list.push(cdnjs+"underscore.js/1.6.0/underscore-min.js")
   - list.push(cdnjs+"datatables/1.10.0/jquery.dataTables.min.js")
   - list.push('http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')
+  - list.push('/static/js/jquery-animate-css-rotate-scale.js')
+  - list.push('/static/js/destroy.js')
   each src in list
       script(src=src, type='text/javascript')

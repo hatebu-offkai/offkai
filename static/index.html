@@ -28,7 +28,6 @@
       -ms-user-select: none;
     }
 
-
     .kurenai {
       width: 80px;
       height: 60px;
@@ -69,7 +68,7 @@
       top:0;
     }
     div.new-space-wrapper div{
-      background-color: white;
+      background-color: rgba(255,255,255,0.5);
     }
     .topic .container {
       border: none !important;
@@ -119,16 +118,16 @@
           <a href="/user/netcraft" data-track-name="global-header-my-page-click" data-track-once="">
             <img src="http://cdn7.www.st-hatena.com/users/ne/netcraft/profile_s.gif?1387856453" alt="netcraft" class="profile-image">プロフィール</a>
           </li>
-          <li class="space-menu destroy">
-            <a href="#" data-track-name="global-header-create-space-click" data-track-once="">スペースをこわす</a>
+          <li class="space-menu">
+            <a href="javascript:destroy();">スペースをこわす</a>
           </li>
-          <li class="space-menu"><a href="/-/feedback" data-track-name="global-header-feedback-click" data-track-once="">フィードバック</a></li>
-          <li class="space-menu"><a href="/-/help" data-track-name="global-header-help-click" data-track-once="">ヘルプ</a></li>
+          <li class="space-menu">
+            <a href="/users">参加者一覧</a>
+          </li>
           <li class="header-username" id="header-username" data-name="hoge" data-track-name="global-header-icon-service-click" data-track-once="" data-track-selector="img">
             <span class="header-dropdown" tabindex="0">
               <img src="http://cdn.www.st-hatena.com/images/header/usermenu-wh.png" alt="利用中のサービス">
             </span>
-            <dl class="header-window" id="username-window" style="display: none;"><dt class="label"><span>利用中のサービス</span></dt><dd><a href="http://www.hatena.ne.jp/me/b/?via=201008" rel="noreferrer" target="_blank"><img alt="" src="//www.hatena.com/images/favicon/bookmark.png">はてなブックマーク</a></dd><dd><a href="http://www.hatena.ne.jp/me/blog/?via=201008" rel="noreferrer" target="_blank"><img alt="" src="//www.hatena.com/images/favicon/blog.png">はてなブログ</a></dd><dd><a href="http://www.hatena.ne.jp/me/d/?via=201008" rel="noreferrer" target="_blank"><img alt="" src="//www.hatena.com/images/favicon/diary.png">はてなダイアリー</a></dd><dd><a href="http://www.hatena.ne.jp/me/space/?via=201008" rel="noreferrer" target="_blank"><img alt="" src="//www.hatena.com/images/favicon/space.png">はてなスペース</a></dd><dd><a href="http://www.hatena.ne.jp/me/q/?via=201008" rel="noreferrer" target="_blank"><img alt="" src="//www.hatena.com/images/favicon/question.png">人力検索はてな</a></dd><dd><a href="http://www.hatena.ne.jp/me/f/?via=201008" rel="noreferrer" target="_blank"><img alt="" src="//www.hatena.com/images/favicon/fotolife.png">はてなフォトライフ</a></dd><dd><a href="http://www.hatena.ne.jp/me/c/?via=201008" rel="noreferrer" target="_blank"><img alt="" src="//www.hatena.com/images/favicon/coco.png">はてなココ</a></dd><dd><a href="http://www.hatena.ne.jp/me/h/?via=201008" rel="noreferrer" target="_blank"><img alt="" src="//www.hatena.com/images/favicon/haiku.png">はてなハイク</a></dd><dd><a href="http://www.hatena.ne.jp/me/a/?via=201008" rel="noreferrer" target="_blank"><img alt="" src="//www.hatena.com/images/favicon/antenna.png">はてなアンテナ</a></dd><dd><a href="http://www.hatena.ne.jp/me/mono/?via=201008" rel="noreferrer" target="_blank"><img alt="" src="//www.hatena.com/images/favicon/mono.png">はてなモノリス</a></dd><dd><a href="http://www.hatena.ne.jp/me/g/?via=201008" rel="noreferrer" target="_blank"><img alt="" src="//www.hatena.com/images/favicon/group.png">はてなグループ</a></dd><dd><a href="http://www.hatena.ne.jp/me/graph/?via=201008" rel="noreferrer" target="_blank"><img alt="" src="//www.hatena.com/images/favicon/graph.png">はてなグラフ</a></dd><dd><a href="http://www.hatena.ne.jp/me/k/?via=201008" rel="noreferrer" target="_blank"><img alt="" src="//www.hatena.com/images/favicon/keyword.png">はてなキーワード</a></dd><dt class="label"><span>Myはてな</span></dt><dd><a href="http://www.hatena.ne.jp/my/?via=201008" rel="noreferrer"><img src="//www.hatena.com/images/favicon/www.gif">プロフィール</a></dd><dd><form method="post" action="http://www.hatena.ne.jp/logout"><button class="logout" type="submit"><img width="16" height="16" src="//www.hatena.com/images/header/icon-logout.gif">ログアウト</button></form></dd></dl>
           </li>
           <li class="header-notify" id="header-notify" title="あなたへのお知らせ" data-track-name="global-header-icon-notify-click" data-track-once="" data-track-selector="img">
             <span class="header-dropdown" tabindex="0">
@@ -139,7 +138,8 @@
               <!-- ここにnotifyの一覧 (JSで挿入されます) -->
             </div>
           </li>
-          <li class="global-logo"><a href="http://www.hatena.ne.jp/" data-track-name="global-header-logo-hatena-click" data-track-once=""><img src="http://cdn.www.st-hatena.com/images/header/global-logo-wh.png" alt="Hatena"></a></li>
+          <li class="global-logo"><a href="http://www.hatena.ne.jp/" data-track-name="global-header-logo-hatena-click" data-track-once="">
+            <img src="http://cdn.www.st-hatena.com/images/header/global-logo-wh.png" alt="Hatena"></a></li>
         </ul>
       </div>
     </div>
@@ -209,8 +209,8 @@
           <a href="javascript:void()" style="display: none;">閉じる</a>
       </div>
       <ul class="space-link-list manage-list" data-track-name="left-menu-space-manage-click" data-track-selector="a" data-track-once="">
-        <li class="link-list-new-topic destroy"><a href="#">トピックをこわす</a></li>
-          <li class="link-list-new-topic"><a href="/~/14290830716932572337/+news">フィードを設定する</a></li>
+        <li class="link-list-new-topic"><a href="javascript:destroy();">トピックをこわす</a></li>
+        <li class="link-list-new-topic"><a href="/~/14290830716932572337/+news">フィードを設定する</a></li>
         <li class="link-list-invite"><a href="/~/14290830716932572337/invite" rel="nofollow">招待する</a></li>
         <li class="link-list-setting"><a href="/~/14290830716932572337/manage">スペースの設定</a></li>
       </ul>
@@ -220,7 +220,7 @@
         <img src="/static/img/sunglass.png" width="190">
       </a>
     </div>
-    <div style="margin-top:30px;">
+    <div style="margin-top:30px;padding-left:5px;">
       <a href="http://atnd.org/events/52857" target="_blank">
         <img src="/static/img/tatakare.jpg" width="190" height="190">
       </a>
