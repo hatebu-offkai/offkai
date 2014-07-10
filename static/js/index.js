@@ -5,6 +5,11 @@ $(function(){
     );
     hatebuButtonShower();
 
+    $(window).scroll(function () {
+      startMatrix;
+      hatebuButtonShower();
+    });
+
     $('.destroy').click(function() {
       destroy();
     });

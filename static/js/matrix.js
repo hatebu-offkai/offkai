@@ -21,5 +21,3 @@ var startMatrix = function(){
   };
   setInterval(draw, 33);
 };
-
-setTimeout(startMatrix, 30000);
