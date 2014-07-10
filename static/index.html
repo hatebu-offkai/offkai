@@ -71,6 +71,9 @@
     div.new-space-wrapper div{
       background-color: white;
     }
+    .topic .container {
+      border: none !important;
+    }
 
     .button_x_x {
       top: -10%;
@@ -227,18 +230,6 @@
 </nav>
     <div id="main-container">
   <section class="topic board-topic">
-    <ul class="space-topic-path">
-        <li itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb" class="path-home">
-          <a href="/" itemprop="url">
-            <span itemprop="title">ホーム</span>
-          </a>
-        </li>
-        <li itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb" class="path-space-name">
-          <a href="/~/14290830716932572337" itemprop="url">
-            <span itemprop="title">はてなブックマーク・ユーザー会オフラインミーティング(07/12)</span>
-          </a>
-        </li>
-    </ul>
     <div class="container">
       <div class="topic-header">
         <div class="topic-title-container">
@@ -561,29 +552,6 @@
     </section>
   </div>
 </div>
-    <div id="mini-following-list" class="mini-following-list">
-      <h2><span>フォロー中のスペース一覧</span></h2>
-      <script type="text/x-jsrender" id="mini-following-list-item-template">
-        <li>
-          <a href="{{>space.path}}">
-            <time data-epoch-milliseconds="{{>space.last_activity_at_epoch * 1000}}"></time>
-            <div class="list-space-image" style="background-image:url({{>space.image_url}})"></div>
-            <span class="list-space-title">{{if space.is_private}}<img src="/images/padlock-v3.png" alt="プライベートスペース">{{/if}}{{>space.name}}
-            </span>
-            <span class="list-space-topic">
-              {{>latest_topic.title}}
-            </span>
-            {{if new_topics_count}}
-            <span class="new">{{>new_topics_count}}</span>
-            {{/if}}
-          </a>
-        </li>
-      </script>
-      <ul data-track-name="mini-following-list-click" data-track-selector="a" data-track-once=""></ul>
-      <div class="toplink" style="display: none">
-        <a href="#">もっと見る</a>
-      </div>
-    </div>
 </div>
 <script id="star-box-template" type="text/x-jsrender" data-jsv-tmpl="_0">
 <span class="star-box" data-star-id="{{>star.star_id}}" style="background-image:url({{if smallImage}}{{>star.user.profile_image_small}}{{else}}{{>star.user.profile_image}}{{/if}})">
