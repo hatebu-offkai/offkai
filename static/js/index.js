@@ -6,9 +6,12 @@ $(function(){
 
     var startRainbow = function(){
       var elms = ["li", "a", "h1", "h2", "h3", "span","marquee"];
-      _.each(elms, function(el){
-        $(el).each(function(){
-          $(this).kabuki().rainbow()
+      _.each(elms, function(els){
+        $(els).each(function(){
+          var el = $(this);
+          if(!el.hasClass("skip")){
+            $(this).kabuki().rainbow()
+          }
         });
       });
     };
