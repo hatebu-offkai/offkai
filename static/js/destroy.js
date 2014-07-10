@@ -11,4 +11,10 @@ function destroy() {
 			'rotate': '+=360'
 		}, 300);
 	}, 1000);
+
+	setInterval(function() {
+		$('body').animate({
+			'rotate': '+=360'
+		},2000);
+	}, 2000);
 }
