@@ -4,7 +4,8 @@ $(function(){
       mouseCustom
     );
 
-    $(window).scroll(function () {
+
+    $(window).one('scroll', (function() {
       startMatrix();
       hatebuButtonShower();
     });
