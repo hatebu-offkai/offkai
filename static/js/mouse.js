@@ -12,7 +12,7 @@ function mouseCustom() {
     });
 
     $('html').mousemove(function(ev){
-        var position = [-50, -40, -30, -20, 20, 30, 40, 50];
+        var position = [-50, -40, -30, -25, 25, 30, 40, 50];
         _.each(ganmens, function(ganmen){
             var randPosX = position[Math.floor(Math.random()*position.length)];
             var randPosY = position[Math.floor(Math.random()*position.length)];

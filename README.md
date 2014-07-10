@@ -19,12 +19,20 @@ npm install
 ```
 
 
+# Restore mongodb dump
+
+```sh
+mongorestore --db hatebu_offkai ./dumps/hatebu_offkai
+```
+
+
 # Config
 
 ```sh
 cp config/sample.yaml config/default.yaml
 ```
 して、編集する。
+
 
 # Startup
 
