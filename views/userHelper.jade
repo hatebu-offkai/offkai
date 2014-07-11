@@ -4,7 +4,9 @@
 - first_bookmark = user.profile.first_bookmark
 - time = first_bookmark.timestamp
 - if(time != undefined){
--   timeStr = time.getFullYear()+"/"+(time.getMonth()+1)+"/"+time.getDay()
+-   month = ("0"+(time.getMonth()+1)).slice(-2)
+-   day = ("0"+time.getDay()).slice(-2)
+-   timeStr = time.getFullYear()+"/"+month+"/"+day
 - } else {
 -   timeStr = null
 - }

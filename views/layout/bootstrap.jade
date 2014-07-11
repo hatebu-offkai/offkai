@@ -3,11 +3,14 @@ extends base
 block append meta
   meta(name="viewport", content="width=device-width, initial-scale=1")
   link(rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css")
+  link(rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css")
 
 block append style
   style(type="text/css").
     .navbar { min-height: 37px; height:37px; overflow:hidden; } 
-    .navbar .navbar-brand{ padding: 6px 10px;font-size: 16px;line-height: 18px; } 
+    .navbar-brand{ 
+      padding: 6px 10px; font-size: 16px;line-height: 18px; height:26px;
+    } 
     .navbar .navbar-nav > li > a {
       font-size: 11px; color: white;
       padding-top: 7px; padding-bottom: 7px; line-height: 20px;
@@ -21,6 +24,16 @@ block append style
       padding-top: 11px;
       padding-left: 8px;
       padding-right: 0px;
+    }
+    .navbar .navbar-toggle {
+      padding: 0px;
+    }
+    .navbar-collapse {
+      z-index: 500;
+      background: #222;
+    }
+    .container {
+      z-index: 500;
     }
 
 block scripts

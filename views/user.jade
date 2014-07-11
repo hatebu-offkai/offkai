@@ -101,28 +101,3 @@ block body
                     a(href="http://b.hatena.ne.jp/#{user.id}/#{counter.word}/", target="_blank") #{counter.word}
                     span : #{counter.count}
                   br
-//-
-      div.col-sm-3
-        div.panel.panel-primary.bookmark-words
-          div.panel-heading
-            h3.panel-title タグ
-          div.list-group
-              h4.list-group-item-heading 似ているユーザー
-              h5.list-group-item-heading カテゴリー
-              ol
-                - keyword_recommend_users = user.profile.similarities.category.slice(0,3)
-                each guser in keyword_recommend_users
-                  li
-                    a(href="/user/#{guser.id}")= guser.id
-              h5.list-group-item-heading はてなキーワード
-              ol
-                - keyword_recommend_users = user.profile.similarities.keyword.slice(0,3)
-                each guser in keyword_recommend_users
-                  li
-                    a(href="/user/#{guser.id}")= guser.id
-              h5.list-group-item-heading タイトルの頻出名詞
-              ol
-                - keyword_recommend_users = user.profile.similarities.title.slice(0,3)
-                each guser in keyword_recommend_users
-                  li
-                    a(href="/user/#{guser.id}")= guser.id

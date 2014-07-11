@@ -1,24 +1,31 @@
 
-nav.navbar.navbar-static-top.navbar-inverse(role="navigation")
-  a.navbar-brand(href="/")
-    img(src="/static/img/hatebuoff_png.png", width="157", height="26")
-  ul.nav.navbar-nav.navbar-right
-    li
-      a(href="/user/netcraft")
-        <img src="http://cdn7.www.st-hatena.com/users/ne/netcraft/profile_s.gif" alt="netcraft" class="profile-image">
-        プロフィール
-    li.destroy
-      a(href="javascript:destroy();") スペースをこわす
-    li
-      a(href="/users") 参加者一覧
-    li
-      a.icon
-        <img src="http://cdn.www.st-hatena.com/images/header/usermenu-wh.png" alt="利用中のサービス">
-    li
-      a.icon
-        <img src="http://cdn.www.st-hatena.com/images/header/notify-wh.png" alt="あなたへのお知らせ">
-    li
-      a.logo
-        <img src="http://cdn.www.st-hatena.com/images/header/global-logo-wh.png" alt="Hatena">
+nav.navbar.navbar-static-top.navbar-default.navbar-inverse(role="navigation")
+  div.container-fluid
+    div.navbar-header
+      button.navbar-toggle(type="button", data-toggle="collapse", data-target=".navbar-collapse")
+        span(class="icon-bar")
+        span(class="icon-bar")
+        span(class="icon-bar")
+      a.navbar-brand(href="/")
+        img(src="/static/img/hatebuoff_png.png", width="157", height="26")
+    div.navbar-collapse.collapse#navbar-menu
+      ul.nav.navbar-nav.navbar-right
+        li
+          a(href="/user/netcraft")
+            <img src="http://cdn7.www.st-hatena.com/users/ne/netcraft/profile_s.gif" alt="netcraft" class="profile-image">
+            プロフィール
+        li.destroy
+          a(href="javascript:destroy();") スペースをこわす
+        li
+          a(href="/users") 参加者一覧
+        li
+          a.icon
+            <img src="http://cdn.www.st-hatena.com/images/header/usermenu-wh.png" alt="利用中のサービス">
+        li
+          a.icon
+            <img src="http://cdn.www.st-hatena.com/images/header/notify-wh.png" alt="あなたへのお知らせ">
+        li
+          a.logo
+            <img src="http://cdn.www.st-hatena.com/images/header/global-logo-wh.png" alt="Hatena">
 
 
